@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Resultat boucle !{% endblock %}</title>
+
+</head>
+<body>
+{% block body %}
+    <div class="container">
+        <h1>Boucle de révision</h1>
+        <h2>{{ utilisateur.nom }} {{ utilisateur.prenom }}</h2>
+        <h3>Votre boucle de révision comporte {{ boucle.nbreHizb }} hizb soit {{ boucle.nombrePages }} pages </h3>
+        <p>Elle aura une durée de {{ boucle.duree }} jours</p>
+        <h3>Planning de révision</h3>
+        <table class="table table-striped table-hover table-bordered">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">Jour</th>
+                <th scope="col">Date du jour</th>
+                <th scope="col">Page de debut</th>
+                <th scope="col">Jusqu'à</th>
+                <th scope="col">Page de fin</th>
+            </tr>
+            </thead>
+            {% for j in boucle.JoursBoucle %}
+                <tbody class="table-striped">
+                <tr>
+                    <td>N° {{ j.jours }}</td>
+                    <td>{{ j.Date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }} </td>
+                    <td>page {{ j.PageDebut }} ( {{ j.sourateDebutBoucleJournaliere }} )</td>
+                    <td>jusqu'à</td>
+                    <td>page {{ j.PageFin }} ( {{ j.sourateFinBoucleJournaliere }} )</td>
+                </tr>
+                </tbody>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}
+
+</body>
+
+
+</html>
+
+
+
+

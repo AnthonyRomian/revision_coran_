@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Acceuil   !{% endblock %}
+
+{% block body %}
+    <div >{%  include('include/nav.html.twig') %}</div>
+
+
+    <h1>Etat des lieux</h1>
+    <h3>Afin de connaitre votre boucle de révision minimale remplissez les champs suivants</h3>
+    {% form_theme EtatDesLieuxForm 'bootstrap_4_horizontal_layout.html.twig' %}
+    {{ form_start(EtatDesLieuxForm) }}
+
+    {{ form_row(EtatDesLieuxForm.sourate_debut) }}
+    {{ form_row(EtatDesLieuxForm.sourate_debut_verset_debut) }}
+    {{ form_row(EtatDesLieuxForm.sourate_debut_verset_fin) }}
+
+    {{ form_row(EtatDesLieuxForm.sourate_fin) }}
+    {{ form_row(EtatDesLieuxForm.sourate_fin_verset_debut) }}
+    {{ form_row(EtatDesLieuxForm.sourate_fin_verset_fin) }}
+
+{#    {{ form_row(EtatDesLieuxForm.JoursDeDebut) }}#}
+    {{ form_row(EtatDesLieuxForm.joursDeMemo) }}
+
+    {{ form_end(EtatDesLieuxForm) }}
+
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('assets/js/sourate_verset_script.js') }}" type="text/javascript" ></script>
+
+{% endblock %}

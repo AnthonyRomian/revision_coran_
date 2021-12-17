@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon profil!{% endblock %}
+
+{% block body %}
+    <div >{%  include('include/nav.html.twig') %}</div>
+
+    <div class="container">
+        <div class="text-center">
+            <h1 class="text-center mb-5 mt-3">{{ participant.prenom }} {{ participant.nom }}</h1>
+        </div>
+        <div class="row">
+            <div class="col-md-6 d-flex flex-column justify-content-center">
+
+                <div class="mb-3 row">
+                    <p class="col-sm-6 text-right pr-5">Prénom : </p>
+                    <div class="col-sm-6">
+                        <p class="text-left">{{ participant.prenom }}</p>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <p class="col-sm-6 text-right pr-5">Nom : </p>
+                    <div class="col-sm-6">
+                        <p class="text-left">{{ participant.nom }}</p>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <p class="col-sm-6 text-right pr-5">Email : </p>
+                    <div class="col-sm-6">
+                        <p class="text-left">{{ participant.email }}</p>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <a href="{{ path('home') }}"><button class="btn btn-success mr-3">Retour</button></a>
+                    <a href="{{ path('profil_edit', {'id': app.user.id}) }}"><button class="btn btn-success mr-3">Editer le profil</button></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

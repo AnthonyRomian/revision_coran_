@@ -1,0 +1,31 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        {% if app.user %}
+            <a class="navbar-brand" href="{{ path('home') }}"><img src="{{ asset('assets/img/logo_coran_revision.jpg')}}" alt="logo"></a>
+        {% else %}
+            <a class="navbar-brand" href="{{ path('app_login') }}">Révision</a>
+        {% endif %}
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{{ path('home') }}" title="home">Accueil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('profil', {'id': app.user.id}) }}" title="mon profil">Mon profil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('etat_list', {'id': app.user.id}) }}" title="liste des sorties">Liste des révisions</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="" title="création">Nouvelle révision</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="" title="logout">Se déconnecter</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
