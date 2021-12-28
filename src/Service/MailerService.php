@@ -48,14 +48,16 @@ class MailerService
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function send(string $sujet, string $from, string $to,string $htmltemplate, array $parameters) : void
+    public function send(string $sujet, string $from, string $to,string $htmltemplate, array $parameters, ?string $lien) : void
     {
         $email = (new TemplatedEmail())
             ->from($from)
             ->to($to)
             ->subject($sujet)
             ->htmlTemplate($htmltemplate)
-            ->context($parameters);
+            ->context($parameters)
+            ->attachFromPath($lien);
+
         $this->mailer->send($email);
     }
 }

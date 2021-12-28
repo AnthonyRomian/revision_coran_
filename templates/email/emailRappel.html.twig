@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Resultat boucle !{% endblock %}</title>
+
+</head>
+<body>
+{% block body %}
+    <div class="container">
+        <img src="{{ email.image('@img' ~ asset('logo_coran_revision.jpg')) }}" alt="Logo">
+        <h2>{{jour}}</h2>
+        <h2>{{ nom }} {{ prenom }}</h2>
+
+    </div>
+{% endblock %}
+
+</body>
+
+
+</html>
+
+
+
+

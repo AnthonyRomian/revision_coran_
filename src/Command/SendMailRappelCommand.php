@@ -18,6 +18,10 @@ use Ilovepdf\Ilovepdf;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class SendMailRappelCommand extends Command
 {
@@ -54,75 +58,77 @@ class SendMailRappelCommand extends Command
 
             for ($j = 0; $j < count($listJoursderevision); $j++) {
 
-                if (date('Y-m-d') == date_format($listJoursderevision[$j]->getDate(),'Y-m-d' ) && $listJoursderevision[$j]->getPageDebut() != "memorisation") {
+                if (date('Y-m-d') == date_format($listJoursderevision[$j]->getDate(), 'Y-m-d') && $listJoursderevision[$j]->getPageDebut() != "memorisation") {
                     dump('rentre dans la creation');
                     $range = $listJoursderevision[$j]->getPageDebut() . '-' . $listJoursderevision[$j]->getPageFin();
                     $jour = $listJoursderevision[$j]->getJours();
                     dump($range);
+                    dump($jour);
 
                     try {
-                    $ilovepdf = new Ilovepdf('project_public_d0de1cb7c4d86a084e962f5e960a0c53_qc5fX238c17dbebc8310fd5beaab6dd22b10f', 'secret_key_3809ed823d1f74197d56c5ab33a98aba_IOmNe3f1d2b8ecbeb7c7ca1d025f893204ffb');
+                        $ilovepdf = new Ilovepdf('project_public_d0de1cb7c4d86a084e962f5e960a0c53_qc5fX238c17dbebc8310fd5beaab6dd22b10f', 'secret_key_3809ed823d1f74197d56c5ab33a98aba_IOmNe3f1d2b8ecbeb7c7ca1d025f893204ffb');
 
-                    // Create a new task
-                    $myTaskSplit = $ilovepdf->newTask('split');
+                        $myTaskSplit = $ilovepdf->newTask('split');
 
-                    // Add files to task for upload
-                    $quran_entier = $myTaskSplit->addFile('public/assets/pdf/quran_entier.pdf');
+                        // Set your own encrypt your files to true
+                        $myTaskSplit->setFileEncryption(true, '1234123412341234');
 
-                    // Set your own encrypt your files to true
-                    $myTaskSplit->setFileEncryption(false, '1234123412341234');
+                        // Add files to task for upload
+                        $quran_entier = $myTaskSplit->addFile('public/assets/pdf/quran_entier.pdf');
 
-                    // Set your tool options
-                    $myTaskSplit->setRanges($range);
+                        // Set your tool options
+                        $myTaskSplit->setRanges($range);
 
-                    // and name for split document (inside the zip file)
-                    $myTaskSplit->setOutputFilename('jour_'.$jour.'-'.$range.'.pdf');
+                        // and name for split document (inside the zip file)
+                        $myTaskSplit->setOutputFilename('jour_' . $jour . '.pdf');
 
-                    // Execute the task
-                    $myTaskSplit->execute();
+                        $path = "public/assets/pdf/$userNom/$jour";
+                        if (!is_dir($path)) {
+                            mkdir($path, 0777, true);
+                        }
 
-                    $path = "/public/assets/pdf/$userNom/$jour";
-                    if (!is_dir($path)) {
-                        mkdir($path, 0777, true);
+                        // Execute the task
+                        $myTaskSplit->execute();
+
+                        // Download the package files
+                        $myTaskSplit->download($path);
+
+                        $lien = $path . '/jour_' . $jour . '-' . $range . '.pdf';
+
+                        $this->mailerService->send("Jour n°$jour de votre révision", "anthony.romian2021@campus-eni.fr", $userMail, "/email/emailRappel.html.twig",
+                            [
+                                // ajouter tous les infos resultats
+                                "nom" => $userNom,
+                                "prenom" => $userNom,
+                                "jour" => $jour,
+                            ]
+                            , $lien);
+
+
+                    } catch (StartException $e) {
+                        echo "An error occured on start: " . $e->getMessage() . " ";
+                        // Authentication errors
+                    } catch (AuthException $e) {
+                        echo "An error occured on auth: " . $e->getMessage() . " ";
+                        echo implode(', ', $e->getErrors());
+                        // Uploading files errors
+                    } catch (UploadException $e) {
+                        echo "An error occured on upload: " . $e->getMessage() . " ";
+                        echo implode(', ', $e->getErrors());
+                        // Processing files errors
+                    } catch (ProcessException $e) {
+                        echo "An error occured on process: " . $e->getMessage() . " ";
+                        echo implode(', ', $e->getErrors());
+                        // Downloading files errors
+                    } catch (DownloadException $e) {
+                        echo "An error occured on process: " . $e->getMessage() . " ";
+                        echo implode(', ', $e->getErrors());
+                        // Other errors (as connexion errors and other)
+                    } catch (Exception $e) {
+                        echo "An error occured: " . $e->getMessage();
                     }
 
-                    // Download the package files
-                    $myTaskSplit->download($path);
-                } catch (StartException $e) {
-                    echo "An error occured on start: " . $e->getMessage() . " ";
-                    // Authentication errors
-                } catch (AuthException $e) {
-                    echo "An error occured on auth: " . $e->getMessage() . " ";
-                    echo implode(', ', $e->getErrors());
-                    // Uploading files errors
-                } catch (UploadException $e) {
-                    echo "An error occured on upload: " . $e->getMessage() . " ";
-                    echo implode(', ', $e->getErrors());
-                    // Processing files errors
-                } catch (ProcessException $e) {
-                    echo "An error occured on process: " . $e->getMessage() . " ";
-                    echo implode(', ', $e->getErrors());
-                    // Downloading files errors
-                } catch (DownloadException $e) {
-                    echo "An error occured on process: " . $e->getMessage() . " ";
-                    echo implode(', ', $e->getErrors());
-                    // Other errors (as connexion errors and other)
-                } catch (Exception $e) {
-                    echo "An error occured: " . $e->getMessage();
-                }
 
-                    /*$this->mailerService->send("Rappel jour x - Votre révision", "contact@top-enr.com", $email, "email/contact-rappel.html.twig",
-                                    [
-                                        // ajouter tous les infos resultats
-                                        "name" => $utilisateur->getNom(),
-                                        "prenom" => $utilisateur->getPrenom(),
-                                        "prime_renov" => $utilisateur->getResultat()->getPrimeRenov(),
-                                        "prime_cee" => $utilisateur->getResultat()->getCee(),
-                                        "prime_fioul" => $utilisateur->getResultat()->getCdpChauffage(),
-                                        "total" => $utilisateur->getResultat()->getMontantTotal(),
-                                        "proprietee" => $utilisateur->getProprietaire(),
-                                    ]
-                                );*/
                 }
             }
         }
