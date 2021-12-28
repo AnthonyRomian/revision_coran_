@@ -8,6 +8,12 @@ use App\Repository\EtatDesLieuxRepository;
 use App\Repository\UserRepository;
 use App\Service\MailerService;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
+use Ilovepdf\Exceptions\AuthException;
+use Ilovepdf\Exceptions\DownloadException;
+use Ilovepdf\Exceptions\ProcessException;
+use Ilovepdf\Exceptions\StartException;
+use Ilovepdf\Exceptions\UploadException;
 use Ilovepdf\Ilovepdf;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -54,6 +60,7 @@ class SendMailRappelCommand extends Command
                     $jour = $listJoursderevision[$j]->getJours();
                     dump($range);
 
+                    try {
                     $ilovepdf = new Ilovepdf('project_public_d0de1cb7c4d86a084e962f5e960a0c53_qc5fX238c17dbebc8310fd5beaab6dd22b10f', 'secret_key_3809ed823d1f74197d56c5ab33a98aba_IOmNe3f1d2b8ecbeb7c7ca1d025f893204ffb');
 
                     // Create a new task
@@ -63,7 +70,7 @@ class SendMailRappelCommand extends Command
                     $quran_entier = $myTaskSplit->addFile('public/assets/pdf/quran_entier.pdf');
 
                     // Set your own encrypt your files to true
-                    $myTaskSplit->setFileEncryption(true, '1234123412341234');
+                    $myTaskSplit->setFileEncryption(false, '1234123412341234');
 
                     // Set your tool options
                     $myTaskSplit->setRanges($range);
@@ -74,13 +81,36 @@ class SendMailRappelCommand extends Command
                     // Execute the task
                     $myTaskSplit->execute();
 
-                    $path = "C:\wamp64\www\revision_coran/public/assets/pdf/$userNom/$jour";
+                    $path = "/public/assets/pdf/$userNom/$jour";
                     if (!is_dir($path)) {
                         mkdir($path, 0777, true);
                     }
 
                     // Download the package files
                     $myTaskSplit->download($path);
+                } catch (StartException $e) {
+                    echo "An error occured on start: " . $e->getMessage() . " ";
+                    // Authentication errors
+                } catch (AuthException $e) {
+                    echo "An error occured on auth: " . $e->getMessage() . " ";
+                    echo implode(', ', $e->getErrors());
+                    // Uploading files errors
+                } catch (UploadException $e) {
+                    echo "An error occured on upload: " . $e->getMessage() . " ";
+                    echo implode(', ', $e->getErrors());
+                    // Processing files errors
+                } catch (ProcessException $e) {
+                    echo "An error occured on process: " . $e->getMessage() . " ";
+                    echo implode(', ', $e->getErrors());
+                    // Downloading files errors
+                } catch (DownloadException $e) {
+                    echo "An error occured on process: " . $e->getMessage() . " ";
+                    echo implode(', ', $e->getErrors());
+                    // Other errors (as connexion errors and other)
+                } catch (Exception $e) {
+                    echo "An error occured: " . $e->getMessage();
+                }
+
                     /*$this->mailerService->send("Rappel jour x - Votre révision", "contact@top-enr.com", $email, "email/contact-rappel.html.twig",
                                     [
                                         // ajouter tous les infos resultats
