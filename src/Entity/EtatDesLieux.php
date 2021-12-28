@@ -6,6 +6,7 @@ use App\Repository\EtatDesLieuxRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=EtatDesLieuxRepository::class)
@@ -78,6 +79,13 @@ class EtatDesLieux
     {
         return $this->JoursDeDebut;
     }
+
+    /**
+     *
+     * @ORM\Column(type="boolean")
+     * @Assert\NotNull (message="Renseignez si vous oui ou non")
+     */
+    private $envoieMail;
 
 
     public function __construct()
@@ -262,6 +270,18 @@ class EtatDesLieux
     public function setJoursDeDebut(\DateTimeInterface $JoursDeDebut): self
     {
         $this->JoursDeDebut = $JoursDeDebut;
+
+        return $this;
+    }
+
+    public function getEnvoieMail(): ?bool
+    {
+        return $this->envoieMail;
+    }
+
+    public function setEnvoieMail(bool $envoieMail): self
+    {
+        $this->envoieMail = $envoieMail;
 
         return $this;
     }

@@ -51,6 +51,8 @@ class CalculateurBoucle extends AbstractController
         $boucle_de_revision->setEtatDesLieux($etatDesLieux);
         $boucle_de_revision->setDateDebut($etatDesLieux->getJoursDeDebut());
         $boucle_de_revision->setNom($nom . '-revision-' . uniqid());
+        $joursDebut = $boucle_de_revision->getDateDebut();
+
 
         $joursDeMemorisation = $etatDesLieux->getJoursDeMemo();
 
@@ -114,12 +116,12 @@ class CalculateurBoucle extends AbstractController
             for ($i = 0; $i < $boucle_de_revision_1 + 1; $i++) {
                 $jours_de_revision = new JoursDeBoucle();
                 $jours_de_revision->setJours($i);
-                $jours_courant = new DateTime('now');
+                $jours_courant = $joursDebut;
 
                 if ($i === 0) {
                     $jours_de_revision->setDate($jours_courant);
                 } else {
-                    $jours_courant = $jours_courant->add(new DateInterval('P' . $i . 'D'));
+                    $jours_courant = $jours_courant->add(new DateInterval('P1D'));
                     $jours_de_revision->setDate($jours_courant);
                     if ($jours_courant->format('w') == $joursDeMemorisation) {
                         $jours_de_revision->setDate($jours_courant);

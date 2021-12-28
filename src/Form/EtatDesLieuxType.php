@@ -83,6 +83,19 @@ class EtatDesLieuxType extends AbstractType
                     'Dimanche' => 7,
                 ]
             ])
+            ->add('envoieMail', ChoiceType::class,[
+                'label_attr' => [
+                    'class' => 'label'
+                ],
+                'label' => 'Voulez vous recevoir votre révision journalière ?',
+                'choices' => [
+                    'Oui' => true,
+                    'Non' => false
+                ],
+                'multiple' => false,
+                'expanded' => true,
+                'data' => true
+            ])
             ->add('Valider', SubmitType::class, [
                 'attr' => [
                    'class' => 'btn-success mr-3'],
