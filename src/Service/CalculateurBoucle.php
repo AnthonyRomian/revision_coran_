@@ -113,67 +113,68 @@ class CalculateurBoucle extends AbstractController
             $relicat_jour = $rest_nbre_page_jour;
 
             //boucle pour decoupage des jours mettre dans tableau
-            for ($i = 0; $i < $boucle_de_revision_1 + 1; $i++) {
+            for ($i = 1; $i < $boucle_de_revision_1 + 1; $i++) {
                 $jours_de_revision = new JoursDeBoucle();
                 $jours_de_revision->setJours($i);
                 $jours_courant = $joursDebut;
 
-                if ($i === 0) {
+                if ($i === 1) {
                     $jours_de_revision->setDate($jours_courant);
                 } else {
                     $jours_courant = $jours_courant->add(new DateInterval('P1D'));
                     $jours_de_revision->setDate($jours_courant);
-                    if ($jours_courant->format('w') == $joursDeMemorisation) {
-                        $jours_de_revision->setDate($jours_courant);
-                        $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
-                        $jours_de_revision->setPageDebut("memorisation");
-                        $jours_de_revision->setPageFin("memorisation");
-                        $jours_de_revision->setNombrePage("memorisation");
-                        $jours_de_revision->setSourateDebutBoucleJournaliere("memorisation");
-                        $jours_de_revision->setSourateFinBoucleJournaliere("memorisation");
-                        $entityManager->persist($jours_de_revision);
-                        $entityManager->flush();
-                    } else {
-                        //creer un tableau par jour
-                        $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
-
-                        //gerer le relicat du reste de division $rest_nbre_page_jour
-                        if ($relicat_jour !== 0) {
-                            $quotat_journalier = $nbre_page_jour + 1;
-                            $relicat_jour--;
-                            // ajouter au nombre de page par jour jusqu a ce que $rest page jour soit 0
-                        } else {
-                            $quotat_journalier = $nbre_page_jour;
-                        }
-                        $jours_de_revision->setNombrePage($quotat_journalier);
-
-                        //de valeur depart + X valeur de gap -> valeur +nombre par jour entier
-                        for ($j = 0; $j < $quotat_journalier; $j++) {
-                            if ($j === 0) {
-                                $jours_de_revision->setPageDebut($borne_courante);
-                                $borne_api_debut = $apiService->getPageData($borne_courante)['data']['surahs'];
-                                $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
-                                $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
-                                $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
-                                $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate);
-                            }
-                            if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
-                                $jours_de_revision->setPageFin($borne_courante);
-                                $borne_api_fin = $apiService->getPageData($borne_courante)['data']['surahs'];
-                                $num_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['number'];
-                                $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
-                                $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
-                                $jours_de_revision->setSourateFinBoucleJournaliere($last_sourate);
-                            }
-                            $borne_courante += 1;
-                        }
-                        // persist des données jours de revision
-                        $entityManager->persist($jours_de_revision);
-                        $entityManager->flush();
-                    }
-                    // generer un pdf de rappel
-                    // generer une suite d email avec portion a reviser
                 }
+                if ($jours_courant->format('w') == $joursDeMemorisation) {
+                    $jours_de_revision->setDate($jours_courant);
+                    $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
+                    $jours_de_revision->setPageDebut("memorisation");
+                    $jours_de_revision->setPageFin("memorisation");
+                    $jours_de_revision->setNombrePage("memorisation");
+                    $jours_de_revision->setSourateDebutBoucleJournaliere("memorisation");
+                    $jours_de_revision->setSourateFinBoucleJournaliere("memorisation");
+                    $entityManager->persist($jours_de_revision);
+                    $entityManager->flush();
+                } else {
+                    //creer un tableau par jour
+                    $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
+
+                    //gerer le relicat du reste de division $rest_nbre_page_jour
+                    if ($relicat_jour !== 0) {
+                        $quotat_journalier = $nbre_page_jour + 1;
+                        $relicat_jour--;
+                        // ajouter au nombre de page par jour jusqu a ce que $rest page jour soit 0
+                    } else {
+                        $quotat_journalier = $nbre_page_jour;
+                    }
+                    $jours_de_revision->setNombrePage($quotat_journalier);
+
+                    //de valeur depart + X valeur de gap -> valeur +nombre par jour entier
+                    for ($j = 0; $j < $quotat_journalier; $j++) {
+                        if ($j === 0) {
+                            $jours_de_revision->setPageDebut($borne_courante);
+                            $borne_api_debut = $apiService->getPageData($borne_courante)['data']['surahs'];
+                            $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
+                            $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
+                            $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
+                            $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate);
+                        }
+                        if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
+                            $jours_de_revision->setPageFin($borne_courante);
+                            $borne_api_fin = $apiService->getPageData($borne_courante)['data']['surahs'];
+                            $num_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['number'];
+                            $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
+                            $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
+                            $jours_de_revision->setSourateFinBoucleJournaliere($last_sourate);
+                        }
+                        $borne_courante += 1;
+                    }
+                    // persist des données jours de revision
+                    $entityManager->persist($jours_de_revision);
+                    $entityManager->flush();
+                }
+                // generer un pdf de rappel
+                // generer une suite d email avec portion a reviser
+
             }
         } else if ($quantité_hizb >= 15 && $quantité_hizb <= 28) {
             $boucle_de_revision->setDuree($boucle_de_revision_2);
@@ -191,64 +192,65 @@ class CalculateurBoucle extends AbstractController
             for ($i = 0; $i < $boucle_de_revision_2 + 1; $i++) {
                 $jours_de_revision = new JoursDeBoucle();
                 $jours_de_revision->setJours($i);
-                $jours_courant = new DateTime('now');
+                $jours_courant = $joursDebut;
 
-                if ($i === 0) {
+                if ($i === 1) {
                     $jours_de_revision->setDate($jours_courant);
                 } else {
-                    $jours_courant = $jours_courant->add(new DateInterval('P' . $i . 'D'));
+                    $jours_courant = $jours_courant->add(new DateInterval('P1D'));
                     $jours_de_revision->setDate($jours_courant);
-                    if ($jours_courant->format('w') == $joursDeMemorisation) {
-                        $jours_de_revision->setDate($jours_courant);
-                        $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
-                        $jours_de_revision->setPageDebut("memorisation");
-                        $jours_de_revision->setPageFin("memorisation");
-                        $jours_de_revision->setNombrePage("memorisation");
-                        $jours_de_revision->setSourateDebutBoucleJournaliere("memorisation");
-                        $jours_de_revision->setSourateFinBoucleJournaliere("memorisation");
-                        $entityManager->persist($jours_de_revision);
-                        $entityManager->flush();
-                    } else {
-                        //creer un tableau par jour
-                        $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
-
-                        //gerer le relicat du reste de division $rest_nbre_page_jour
-                        if ($relicat_jour !== 0) {
-                            $quotat_journalier = $nbre_page_jour + 1;
-                            $relicat_jour--;
-                            // ajouter au nombre de page par jour jusqu a ce que $rest page jour soit 0
-                        } else {
-                            $quotat_journalier = $nbre_page_jour;
-                        }
-                        $jours_de_revision->setNombrePage($quotat_journalier);
-
-                        //de valeur depart + X valeur de gap -> valeur +nombre par jour entier
-                        for ($j = 0; $j < $quotat_journalier; $j++) {
-                            if ($j === 0) {
-                                $jours_de_revision->setPageDebut($borne_courante);
-                                $borne_api_debut = $apiService->getPageData($borne_courante)['data']['surahs'];
-                                $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
-                                $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
-                                $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
-                                $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate);
-                            }
-                            if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
-                                $jours_de_revision->setPageFin($borne_courante);
-                                $borne_api_fin = $apiService->getPageData($borne_courante)['data']['surahs'];
-                                $num_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['number'];
-                                $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
-                                $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
-                                $jours_de_revision->setSourateFinBoucleJournaliere($last_sourate);
-                            }
-                            $borne_courante += 1;
-                        }
-                        // persist des données jours de revision
-                        $entityManager->persist($jours_de_revision);
-                        $entityManager->flush();
-                    }
-                    // generer un pdf de rappel
-                    // generer une suite d email avec portion a reviser
                 }
+                if ($jours_courant->format('w') == $joursDeMemorisation) {
+                    $jours_de_revision->setDate($jours_courant);
+                    $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
+                    $jours_de_revision->setPageDebut("memorisation");
+                    $jours_de_revision->setPageFin("memorisation");
+                    $jours_de_revision->setNombrePage("memorisation");
+                    $jours_de_revision->setSourateDebutBoucleJournaliere("memorisation");
+                    $jours_de_revision->setSourateFinBoucleJournaliere("memorisation");
+                    $entityManager->persist($jours_de_revision);
+                    $entityManager->flush();
+                } else {
+                    //creer un tableau par jour
+                    $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
+
+                    //gerer le relicat du reste de division $rest_nbre_page_jour
+                    if ($relicat_jour !== 0) {
+                        $quotat_journalier = $nbre_page_jour + 1;
+                        $relicat_jour--;
+                        // ajouter au nombre de page par jour jusqu a ce que $rest page jour soit 0
+                    } else {
+                        $quotat_journalier = $nbre_page_jour;
+                    }
+                    $jours_de_revision->setNombrePage($quotat_journalier);
+
+                    //de valeur depart + X valeur de gap -> valeur +nombre par jour entier
+                    for ($j = 0; $j < $quotat_journalier; $j++) {
+                        if ($j === 0) {
+                            $jours_de_revision->setPageDebut($borne_courante);
+                            $borne_api_debut = $apiService->getPageData($borne_courante)['data']['surahs'];
+                            $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
+                            $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
+                            $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
+                            $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate);
+                        }
+                        if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
+                            $jours_de_revision->setPageFin($borne_courante);
+                            $borne_api_fin = $apiService->getPageData($borne_courante)['data']['surahs'];
+                            $num_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['number'];
+                            $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
+                            $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
+                            $jours_de_revision->setSourateFinBoucleJournaliere($last_sourate);
+                        }
+                        $borne_courante += 1;
+                    }
+                    // persist des données jours de revision
+                    $entityManager->persist($jours_de_revision);
+                    $entityManager->flush();
+                }
+                // generer un pdf de rappel
+                // generer une suite d email avec portion a reviser
+
             }
         } else if ($quantité_hizb >= 29 && $quantité_hizb <= 42) {
             $boucle_de_revision->setDuree($boucle_de_revision_3);
@@ -265,64 +267,65 @@ class CalculateurBoucle extends AbstractController
             for ($i = 0; $i < $boucle_de_revision_3 + 1; $i++) {
                 $jours_de_revision = new JoursDeBoucle();
                 $jours_de_revision->setJours($i);
-                $jours_courant = new DateTime('now');
+                $jours_courant = $joursDebut;
 
-                if ($i === 0) {
+                if ($i === 1) {
                     $jours_de_revision->setDate($jours_courant);
                 } else {
-                    $jours_courant = $jours_courant->add(new DateInterval('P' . $i . 'D'));
+                    $jours_courant = $jours_courant->add(new DateInterval('P1D'));
                     $jours_de_revision->setDate($jours_courant);
-                    if ($jours_courant->format('w') == $joursDeMemorisation) {
-                        $jours_de_revision->setDate($jours_courant);
-                        $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
-                        $jours_de_revision->setPageDebut("memorisation");
-                        $jours_de_revision->setPageFin("memorisation");
-                        $jours_de_revision->setNombrePage("memorisation");
-                        $jours_de_revision->setSourateDebutBoucleJournaliere("memorisation");
-                        $jours_de_revision->setSourateFinBoucleJournaliere("memorisation");
-                        $entityManager->persist($jours_de_revision);
-                        $entityManager->flush();
-                    } else {
-                        //creer un tableau par jour
-                        $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
-
-                        //gerer le relicat du reste de division $rest_nbre_page_jour
-                        if ($relicat_jour !== 0) {
-                            $quotat_journalier = $nbre_page_jour + 1;
-                            $relicat_jour--;
-                            // ajouter au nombre de page par jour jusqu a ce que $rest page jour soit 0
-                        } else {
-                            $quotat_journalier = $nbre_page_jour;
-                        }
-                        $jours_de_revision->setNombrePage($quotat_journalier);
-
-                        //de valeur depart + X valeur de gap -> valeur +nombre par jour entier
-                        for ($j = 0; $j < $quotat_journalier; $j++) {
-                            if ($j === 0) {
-                                $jours_de_revision->setPageDebut($borne_courante);
-                                $borne_api_debut = $apiService->getPageData($borne_courante)['data']['surahs'];
-                                $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
-                                $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
-                                $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
-                                $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate);
-                            }
-                            if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
-                                $jours_de_revision->setPageFin($borne_courante);
-                                $borne_api_fin = $apiService->getPageData($borne_courante)['data']['surahs'];
-                                $num_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['number'];
-                                $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
-                                $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
-                                $jours_de_revision->setSourateFinBoucleJournaliere($last_sourate);
-                            }
-                            $borne_courante += 1;
-                        }
-                        // persist des données jours de revision
-                        $entityManager->persist($jours_de_revision);
-                        $entityManager->flush();
-                    }
-                    // generer un pdf de rappel
-                    // generer une suite d email avec portion a reviser
                 }
+                if ($jours_courant->format('w') == $joursDeMemorisation) {
+                    $jours_de_revision->setDate($jours_courant);
+                    $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
+                    $jours_de_revision->setPageDebut("memorisation");
+                    $jours_de_revision->setPageFin("memorisation");
+                    $jours_de_revision->setNombrePage("memorisation");
+                    $jours_de_revision->setSourateDebutBoucleJournaliere("memorisation");
+                    $jours_de_revision->setSourateFinBoucleJournaliere("memorisation");
+                    $entityManager->persist($jours_de_revision);
+                    $entityManager->flush();
+                } else {
+                    //creer un tableau par jour
+                    $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
+
+                    //gerer le relicat du reste de division $rest_nbre_page_jour
+                    if ($relicat_jour !== 0) {
+                        $quotat_journalier = $nbre_page_jour + 1;
+                        $relicat_jour--;
+                        // ajouter au nombre de page par jour jusqu a ce que $rest page jour soit 0
+                    } else {
+                        $quotat_journalier = $nbre_page_jour;
+                    }
+                    $jours_de_revision->setNombrePage($quotat_journalier);
+
+                    //de valeur depart + X valeur de gap -> valeur +nombre par jour entier
+                    for ($j = 0; $j < $quotat_journalier; $j++) {
+                        if ($j === 0) {
+                            $jours_de_revision->setPageDebut($borne_courante);
+                            $borne_api_debut = $apiService->getPageData($borne_courante)['data']['surahs'];
+                            $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
+                            $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
+                            $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
+                            $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate);
+                        }
+                        if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
+                            $jours_de_revision->setPageFin($borne_courante);
+                            $borne_api_fin = $apiService->getPageData($borne_courante)['data']['surahs'];
+                            $num_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['number'];
+                            $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
+                            $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
+                            $jours_de_revision->setSourateFinBoucleJournaliere($last_sourate);
+                        }
+                        $borne_courante += 1;
+                    }
+                    // persist des données jours de revision
+                    $entityManager->persist($jours_de_revision);
+                    $entityManager->flush();
+                }
+                // generer un pdf de rappel
+                // generer une suite d email avec portion a reviser
+
             }
         } else if ($quantité_hizb >= 43 && $quantité_hizb <= 56) {
             $boucle_de_revision->setDuree($boucle_de_revision_4);
@@ -340,64 +343,65 @@ class CalculateurBoucle extends AbstractController
             for ($i = 0; $i < $boucle_de_revision_4 + 1; $i++) {
                 $jours_de_revision = new JoursDeBoucle();
                 $jours_de_revision->setJours($i);
-                $jours_courant = new DateTime('now');
+                $jours_courant = $joursDebut;
 
-                if ($i === 0) {
+                if ($i === 1) {
                     $jours_de_revision->setDate($jours_courant);
                 } else {
-                    $jours_courant = $jours_courant->add(new DateInterval('P' . $i . 'D'));
+                    $jours_courant = $jours_courant->add(new DateInterval('P1D'));
                     $jours_de_revision->setDate($jours_courant);
-                    if ($jours_courant->format('w') == $joursDeMemorisation) {
-                        $jours_de_revision->setDate($jours_courant);
-                        $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
-                        $jours_de_revision->setPageDebut("memorisation");
-                        $jours_de_revision->setPageFin("memorisation");
-                        $jours_de_revision->setNombrePage("memorisation");
-                        $jours_de_revision->setSourateDebutBoucleJournaliere("memorisation");
-                        $jours_de_revision->setSourateFinBoucleJournaliere("memorisation");
-                        $entityManager->persist($jours_de_revision);
-                        $entityManager->flush();
-                    } else {
-                        //creer un tableau par jour
-                        $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
-
-                        //gerer le relicat du reste de division $rest_nbre_page_jour
-                        if ($relicat_jour !== 0) {
-                            $quotat_journalier = $nbre_page_jour + 1;
-                            $relicat_jour--;
-                            // ajouter au nombre de page par jour jusqu a ce que $rest page jour soit 0
-                        } else {
-                            $quotat_journalier = $nbre_page_jour;
-                        }
-                        $jours_de_revision->setNombrePage($quotat_journalier);
-
-                        //de valeur depart + X valeur de gap -> valeur +nombre par jour entier
-                        for ($j = 0; $j < $quotat_journalier; $j++) {
-                            if ($j === 0) {
-                                $jours_de_revision->setPageDebut($borne_courante);
-                                $borne_api_debut = $apiService->getPageData($borne_courante)['data']['surahs'];
-                                $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
-                                $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
-                                $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
-                                $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate);
-                            }
-                            if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
-                                $jours_de_revision->setPageFin($borne_courante);
-                                $borne_api_fin = $apiService->getPageData($borne_courante)['data']['surahs'];
-                                $num_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['number'];
-                                $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
-                                $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
-                                $jours_de_revision->setSourateFinBoucleJournaliere($last_sourate);
-                            }
-                            $borne_courante += 1;
-                        }
-                        // persist des données jours de revision
-                        $entityManager->persist($jours_de_revision);
-                        $entityManager->flush();
-                    }
-                    // generer un pdf de rappel
-                    // generer une suite d email avec portion a reviser
                 }
+                if ($jours_courant->format('w') == $joursDeMemorisation) {
+                    $jours_de_revision->setDate($jours_courant);
+                    $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
+                    $jours_de_revision->setPageDebut("memorisation");
+                    $jours_de_revision->setPageFin("memorisation");
+                    $jours_de_revision->setNombrePage("memorisation");
+                    $jours_de_revision->setSourateDebutBoucleJournaliere("memorisation");
+                    $jours_de_revision->setSourateFinBoucleJournaliere("memorisation");
+                    $entityManager->persist($jours_de_revision);
+                    $entityManager->flush();
+                } else {
+                    //creer un tableau par jour
+                    $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
+
+                    //gerer le relicat du reste de division $rest_nbre_page_jour
+                    if ($relicat_jour !== 0) {
+                        $quotat_journalier = $nbre_page_jour + 1;
+                        $relicat_jour--;
+                        // ajouter au nombre de page par jour jusqu a ce que $rest page jour soit 0
+                    } else {
+                        $quotat_journalier = $nbre_page_jour;
+                    }
+                    $jours_de_revision->setNombrePage($quotat_journalier);
+
+                    //de valeur depart + X valeur de gap -> valeur +nombre par jour entier
+                    for ($j = 0; $j < $quotat_journalier; $j++) {
+                        if ($j === 0) {
+                            $jours_de_revision->setPageDebut($borne_courante);
+                            $borne_api_debut = $apiService->getPageData($borne_courante)['data']['surahs'];
+                            $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
+                            $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
+                            $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
+                            $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate);
+                        }
+                        if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
+                            $jours_de_revision->setPageFin($borne_courante);
+                            $borne_api_fin = $apiService->getPageData($borne_courante)['data']['surahs'];
+                            $num_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['number'];
+                            $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
+                            $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
+                            $jours_de_revision->setSourateFinBoucleJournaliere($last_sourate);
+                        }
+                        $borne_courante += 1;
+                    }
+                    // persist des données jours de revision
+                    $entityManager->persist($jours_de_revision);
+                    $entityManager->flush();
+                }
+                // generer un pdf de rappel
+                // generer une suite d email avec portion a reviser
+
             }
         } else if ($quantité_hizb >= 56 && $quantité_hizb <= 60) {
             $boucle_de_revision->setDuree($boucle_de_revision_5);
@@ -414,64 +418,65 @@ class CalculateurBoucle extends AbstractController
             for ($i = 0; $i < $boucle_de_revision_5 + 1; $i++) {
                 $jours_de_revision = new JoursDeBoucle();
                 $jours_de_revision->setJours($i);
-                $jours_courant = new DateTime('now');
+                $jours_courant = $joursDebut;
 
-                if ($i === 0) {
+                if ($i === 1) {
                     $jours_de_revision->setDate($jours_courant);
                 } else {
-                    $jours_courant = $jours_courant->add(new DateInterval('P' . $i . 'D'));
+                    $jours_courant = $jours_courant->add(new DateInterval('P1D'));
                     $jours_de_revision->setDate($jours_courant);
-                    if ($jours_courant->format('w') == $joursDeMemorisation) {
-                        $jours_de_revision->setDate($jours_courant);
-                        $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
-                        $jours_de_revision->setPageDebut("memorisation");
-                        $jours_de_revision->setPageFin("memorisation");
-                        $jours_de_revision->setNombrePage("memorisation");
-                        $jours_de_revision->setSourateDebutBoucleJournaliere("memorisation");
-                        $jours_de_revision->setSourateFinBoucleJournaliere("memorisation");
-                        $entityManager->persist($jours_de_revision);
-                        $entityManager->flush();
-                    } else {
-                        //creer un tableau par jour
-                        $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
-
-                        //gerer le relicat du reste de division $rest_nbre_page_jour
-                        if ($relicat_jour !== 0) {
-                            $quotat_journalier = $nbre_page_jour + 1;
-                            $relicat_jour--;
-                            // ajouter au nombre de page par jour jusqu a ce que $rest page jour soit 0
-                        } else {
-                            $quotat_journalier = $nbre_page_jour;
-                        }
-                        $jours_de_revision->setNombrePage($quotat_journalier);
-
-                        //de valeur depart + X valeur de gap -> valeur +nombre par jour entier
-                        for ($j = 0; $j < $quotat_journalier; $j++) {
-                            if ($j === 0) {
-                                $jours_de_revision->setPageDebut($borne_courante);
-                                $borne_api_debut = $apiService->getPageData($borne_courante)['data']['surahs'];
-                                $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
-                                $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
-                                $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
-                                $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate);
-                            }
-                            if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
-                                $jours_de_revision->setPageFin($borne_courante);
-                                $borne_api_fin = $apiService->getPageData($borne_courante)['data']['surahs'];
-                                $num_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['number'];
-                                $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
-                                $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
-                                $jours_de_revision->setSourateFinBoucleJournaliere($last_sourate);
-                            }
-                            $borne_courante += 1;
-                        }
-                        // persist des données jours de revision
-                        $entityManager->persist($jours_de_revision);
-                        $entityManager->flush();
-                    }
-                    // generer un pdf de rappel
-                    // generer une suite d email avec portion a reviser
                 }
+                if ($jours_courant->format('w') == $joursDeMemorisation) {
+                    $jours_de_revision->setDate($jours_courant);
+                    $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
+                    $jours_de_revision->setPageDebut("memorisation");
+                    $jours_de_revision->setPageFin("memorisation");
+                    $jours_de_revision->setNombrePage("memorisation");
+                    $jours_de_revision->setSourateDebutBoucleJournaliere("memorisation");
+                    $jours_de_revision->setSourateFinBoucleJournaliere("memorisation");
+                    $entityManager->persist($jours_de_revision);
+                    $entityManager->flush();
+                } else {
+                    //creer un tableau par jour
+                    $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
+
+                    //gerer le relicat du reste de division $rest_nbre_page_jour
+                    if ($relicat_jour !== 0) {
+                        $quotat_journalier = $nbre_page_jour + 1;
+                        $relicat_jour--;
+                        // ajouter au nombre de page par jour jusqu a ce que $rest page jour soit 0
+                    } else {
+                        $quotat_journalier = $nbre_page_jour;
+                    }
+                    $jours_de_revision->setNombrePage($quotat_journalier);
+
+                    //de valeur depart + X valeur de gap -> valeur +nombre par jour entier
+                    for ($j = 0; $j < $quotat_journalier; $j++) {
+                        if ($j === 0) {
+                            $jours_de_revision->setPageDebut($borne_courante);
+                            $borne_api_debut = $apiService->getPageData($borne_courante)['data']['surahs'];
+                            $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
+                            $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
+                            $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
+                            $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate);
+                        }
+                        if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
+                            $jours_de_revision->setPageFin($borne_courante);
+                            $borne_api_fin = $apiService->getPageData($borne_courante)['data']['surahs'];
+                            $num_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['number'];
+                            $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
+                            $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
+                            $jours_de_revision->setSourateFinBoucleJournaliere($last_sourate);
+                        }
+                        $borne_courante += 1;
+                    }
+                    // persist des données jours de revision
+                    $entityManager->persist($jours_de_revision);
+                    $entityManager->flush();
+                }
+                // generer un pdf de rappel
+                // generer une suite d email avec portion a reviser
+
             }
         }
         return $boucle_de_revision;
