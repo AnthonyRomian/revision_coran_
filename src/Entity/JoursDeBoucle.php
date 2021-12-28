@@ -76,8 +76,6 @@ class JoursDeBoucle
     public function __toString()
     {
         return $this->date;
-
-
     }
 
     public function getPageDebut(): ?string
