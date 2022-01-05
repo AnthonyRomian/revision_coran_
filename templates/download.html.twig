@@ -6,13 +6,71 @@
 
 </head>
 <body>
+
+<style>
+
+    @media (min-width: 992px)
+        .container {
+            max-width: 960px;
+        }
+        @media (min-width: 768px)
+            .container {
+                max-width: 720px;
+            }
+            @media (min-width: 576px)
+                .container {
+                    max-width: 540px;
+                }
+                .container {
+                    width: 100%;
+                    padding-right: 15px;
+                    padding-left: 15px;
+                    margin-right: auto;
+                    margin-left: auto;
+                }
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+    .table {
+        width: 100%;
+        margin-bottom: 1rem;
+        color: #212529;
+    }
+    table {
+        border-collapse: collapse;
+    }
+    .table .thead-dark th {
+        color: #fff;
+        background-color: #509039;
+        border-color: #454d55;
+    }
+    .table-bordered thead td, .table-bordered thead th {
+        border-bottom-width: 2px;
+    }
+    .table thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #dee2e6;
+    }
+    .table-bordered td, .table-bordered th {
+        border: 1px solid #dee2e6;
+    }
+    .table td, .table th {
+        padding: 0.75rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+    }
+    th {
+        text-align: inherit;
+    }
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(144, 141, 141, 0.05);
+    }
+</style>
 {% block body %}
     <div class="container">
-        <h1>Boucle de révision</h1>
-        <h2>{{ utilisateur.nom }} {{ utilisateur.prenom }}</h2>
-        <h3>Votre boucle de révision comporte {{ boucle.nbreHizb }} hizb soit {{ boucle.nombrePages }} pages </h3>
+        <h1>Planning de révision</h1>
+        <h3>{{ utilisateur.prenom|capitalize }}, votre boucle de révision comporte {{ boucle.nbreHizb }} hizb, soit {{ boucle.nombrePages }} pages </h3>
         <p>Elle aura une durée de {{ boucle.duree }} jours</p>
-        <h3>Planning de révision</h3>
         <table class="table table-striped table-hover table-bordered">
             <thead class="thead-dark">
             <tr>
@@ -27,17 +85,16 @@
                 <tbody class="table-striped">
                 <tr>
                     <td>N° {{ j.jours }}</td>
-                    <td>{{ j.Date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }} </td>
-                    <td>page {{ j.PageDebut }} ( {{ j.sourateDebutBoucleJournaliere }} )</td>
-                    <td>jusqu'à</td>
-                    <td>page {{ j.PageFin }} ( {{ j.sourateFinBoucleJournaliere }} )</td>
+                    <td>{{ j.Date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY")|capitalize }} </td>
+                    <td>Page {{ j.PageDebut }} ( {{ j.sourateDebutBoucleJournaliere }} )</td>
+                    <td> => </td>
+                    <td>Page {{ j.PageFin }} ( {{ j.sourateFinBoucleJournaliere }} )</td>
                 </tr>
                 </tbody>
             {% endfor %}
         </table>
     </div>
 {% endblock %}
-
 </body>
 
 

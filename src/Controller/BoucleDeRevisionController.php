@@ -80,7 +80,7 @@ class BoucleDeRevisionController extends AbstractController
 
         $boucle_de_revision = $this->entityManager->getRepository(BoucleDeRevision::class)->findOneBy(['etatDesLieux' => $id_edl->getId()]);
 
-        // definir les options du pdf
+        /*// definir les options du pdf
         $pdfOptions = new Options();
 
         //police par defaut
@@ -120,6 +120,14 @@ class BoucleDeRevisionController extends AbstractController
             'Attachement' => true
         ]);
 
-        return new Response();
+        return new Response();*/
+
+        return $this->render('download.html.twig', [
+            'utilisateur' => $utilisateur,
+            'id' => $id_edl,
+            'etat_des_lieux' => $etat_des_lieux,
+            'boucle' => $boucle_de_revision,
+
+        ]);
     }
 }

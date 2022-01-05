@@ -22,11 +22,13 @@ class EtatDesLieux
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotNull
      */
     private $sourate_debut;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotNull
      */
     private $sourate_fin;
 
@@ -42,21 +44,25 @@ class EtatDesLieux
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotNull
      */
     private $sourate_debut_verset_debut;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotNull
      */
     private $sourate_debut_verset_fin;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotNull
      */
     private $sourate_fin_verset_debut;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotNull
      */
     private $sourate_fin_verset_fin;
 
@@ -72,6 +78,7 @@ class EtatDesLieux
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\NotNull
      */
     private $JoursDeDebut;
 
@@ -81,11 +88,15 @@ class EtatDesLieux
     }
 
     /**
-     *
      * @ORM\Column(type="boolean")
      * @Assert\NotNull (message="Renseignez si vous oui ou non")
      */
     private $envoieMail;
+
+    /**
+     * @ORM\Column(type="json", nullable=true)
+     */
+    private $sourateSupp = [];
 
 
     public function __construct()
@@ -282,6 +293,18 @@ class EtatDesLieux
     public function setEnvoieMail(bool $envoieMail): self
     {
         $this->envoieMail = $envoieMail;
+
+        return $this;
+    }
+
+    public function getSourateSupp(): ?array
+    {
+        return $this->sourateSupp;
+    }
+
+    public function setSourateSupp(?array $sourateSupp): self
+    {
+        $this->sourateSupp = $sourateSupp;
 
         return $this;
     }

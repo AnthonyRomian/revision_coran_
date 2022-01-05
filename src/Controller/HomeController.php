@@ -42,6 +42,7 @@ class HomeController extends AbstractController
 
         if($etatDesLieuxForm->isSubmitted() && $etatDesLieuxForm->isValid())
         {
+
             $calculateurBoucle->CalculerBoucle($etatDesLieux, $entityManager, $apiService);
             $entityManager->persist($etatDesLieux);
             $entityManager->flush();

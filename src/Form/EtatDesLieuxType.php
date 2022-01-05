@@ -7,9 +7,11 @@ use App\Entity\Sourate;
 use App\Entity\Verset;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -27,16 +29,17 @@ class EtatDesLieuxType extends AbstractType
                 'class' => Sourate::class,
                 'choice_label' => 'latin',
                 'placeholder' => 'Sourate début :',
-                'label' => 'Sourate début : '
+                'label' => 'Sourate début : ',
+                'required' => false
             ])
             ->add('sourate_debut_verset_debut', ChoiceType::class, [
-                'placeholder' => 'Choisir le premier verset',
+                'placeholder' => 'Premier verset',
                 'required' => false,
                 'mapped' => true,
                 'label' => 'Verset début : '
             ])
             ->add('sourate_debut_verset_fin', ChoiceType::class, [
-                'placeholder' => 'Choisir le dernier verset',
+                'placeholder' => 'Dernier verset',
                 'required' => false,
                 'label' => 'Verset fin : '
 
@@ -46,24 +49,34 @@ class EtatDesLieuxType extends AbstractType
                 'class' => Sourate::class,
                 'choice_label' => 'latin',
                 'placeholder' => 'Sourate fin :',
-                'label' => 'Sourate fin : '
+                'label' => 'Sourate fin : ',
+                'required' => false
+
             ])
             ->add('sourate_fin_verset_debut', ChoiceType::class, [
-                'placeholder' => 'Choisir le premier verset',
+                'placeholder' => 'Premier verset',
                 'required' => false,
                 'label' => 'Verset début : '
 
 
             ])
             ->add('sourate_fin_verset_fin', ChoiceType::class, [
-                'placeholder' => 'Choisir le dernier verset',
+                'placeholder' => 'Dernier verset',
                 'required' => false,
                 'label' => 'Verset fin : '
 
             ])
+            ->add('sourateSupp', TextType::class,[
+                'required' => false,
+                'label_attr' => [
+                    'class' => 'label'
+                ],
+                'label' => 'Sourate Supplémentaire : ',
+                'data'=> [null]
+            ])
             ->add('JoursDeDebut', DateTimeType::class, [
                 'html5'=> true,
-                'required' => true,
+                'required' => false,
                 'widget' => 'single_text',
                 'input' => 'datetime',
                 'label' => 'Premier jours de la révision',
@@ -85,9 +98,11 @@ class EtatDesLieuxType extends AbstractType
             ])
             ->add('envoieMail', ChoiceType::class,[
                 'label_attr' => [
-                    'class' => 'label'
+                    'class' => 'label',
                 ],
-                'label' => 'Voulez vous recevoir votre révision journalière ?',
+                'attr' => [
+                    'class' => 'row'],
+                'label' => 'Voulez vous recevoir un Email journalier de vos révisions ?',
                 'choices' => [
                     'Oui' => true,
                     'Non' => false
@@ -102,6 +117,19 @@ class EtatDesLieuxType extends AbstractType
                 'label' => 'Génerer le plan de révision'
             ]);
 
+        $builder->get('sourateSupp')
+            ->addModelTransformer(new CallbackTransformer(
+                function ($sourateSuppArray) {
+                    // transform the array to a string
+                    return count($sourateSuppArray)? $sourateSuppArray[0]: null;
+                },
+                function ($sourateSuppString) {
+                    // transform the string back to an array
+                    return [$sourateSuppString];
+                }
+            ));
+
+
         $formModifier = function (FormInterface $form, Sourate $sourate_debut = null) {
             $versets_debut = null === $sourate_debut ? [] : $sourate_debut->getVerset();
             $versets_fin = null === $sourate_debut ? [] : $sourate_debut->getVerset();
@@ -113,7 +141,8 @@ class EtatDesLieuxType extends AbstractType
                     'choice_label' => 'numero',
                     'placeholder' => 'Choisir le premier verset',
                     'mapped' => true,
-                    'label' => 'Verset début : '
+                    'label' => 'Verset début : ',
+                    'required' => false
 
                 ])
                 ->add('sourate_debut_verset_fin', EntityType::class, [
@@ -122,7 +151,9 @@ class EtatDesLieuxType extends AbstractType
                     'choice_label' => 'numero',
                     'placeholder' => 'Choisir le dernier verset',
                     'mapped' => true,
-                    'label' => 'Verset fin : '
+                    'label' => 'Verset fin : ',
+                    'required' => false
+
                 ]);
         };
 

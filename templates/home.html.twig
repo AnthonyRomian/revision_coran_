@@ -7,20 +7,93 @@
 
 
     <h1>Etat des lieux</h1>
-    <h3>Afin de connaitre votre boucle de révision minimale remplissez les champs suivants</h3>
-    {% form_theme EtatDesLieuxForm 'bootstrap_4_horizontal_layout.html.twig' %}
+    <h3 class="bg-success rounded text-black p-2 text-center">Afin de connaitre votre boucle de révision minimale remplissez les champs suivants</h3>
     {{ form_start(EtatDesLieuxForm) }}
 
-    {{ form_row(EtatDesLieuxForm.sourate_debut) }}
-    {{ form_row(EtatDesLieuxForm.sourate_debut_verset_debut) }}
-    {{ form_row(EtatDesLieuxForm.sourate_debut_verset_fin) }}
+    <div class="row my-2">
+        <div class="col py-2">
+            {{ form_label(EtatDesLieuxForm.sourate_debut) }}
+        </div>
+        <div class="col">
+            {{ form_widget(EtatDesLieuxForm.sourate_debut) }}
+        </div>
+        <div class="col py-2">
+            {{ form_label(EtatDesLieuxForm.sourate_debut_verset_debut) }}
+        </div>
+        <div class="col">
+            {{ form_widget(EtatDesLieuxForm.sourate_debut_verset_debut) }}
+        </div>
+        <div class="col py-2">
+            {{ form_label(EtatDesLieuxForm.sourate_debut_verset_fin) }}
+        </div>
+        <div class="col">
+            {{ form_widget(EtatDesLieuxForm.sourate_debut_verset_fin) }}
+        </div>
+    </div>
 
-    {{ form_row(EtatDesLieuxForm.sourate_fin) }}
-    {{ form_row(EtatDesLieuxForm.sourate_fin_verset_debut) }}
-    {{ form_row(EtatDesLieuxForm.sourate_fin_verset_fin) }}
 
-{#    {{ form_row(EtatDesLieuxForm.JoursDeDebut) }}#}
-    {{ form_row(EtatDesLieuxForm.joursDeMemo) }}
+    <div class="row my-2">
+        <div class="col py-2">
+            {{ form_label(EtatDesLieuxForm.sourate_fin) }}
+        </div>
+        <div class="col">
+            {{ form_widget(EtatDesLieuxForm.sourate_fin) }}
+        </div>
+        <div class="col py-2">
+            {{ form_label(EtatDesLieuxForm.sourate_fin_verset_debut) }}
+        </div>
+        <div class="col">
+            {{ form_widget(EtatDesLieuxForm.sourate_fin_verset_debut) }}
+        </div>
+        <div class="col py-2">
+            {{ form_label(EtatDesLieuxForm.sourate_fin_verset_fin) }}
+        </div>
+        <div class="col">
+            {{ form_widget(EtatDesLieuxForm.sourate_fin_verset_fin) }}
+        </div>
+    </div>
+    <div class="row my-2">
+        <div class="col-2 py-2">
+            <label class="" for="etat_des_lieux_sourate_supp">Sourate(s) supplémentaire(s) : </label>
+        </div>
+        <div class="col-2">
+            <select id="etat_des_lieux_sourate_supp"  class="form-control">
+                <option value="1">Al-Fatiha</option><option value="2">Al-Baqara</option><option value="3">Aal-e-Imran</option><option value="4">An-Nisa</option><option value="5">Al-Maeda</option><option value="6">Al-Anaam</option><option value="7">Al-Araf</option><option value="8">Al-Anfal</option><option value="9">At-Taubah</option><option value="10">Yunus</option><option value="11">Hud</option><option value="12">Yusuf</option><option value="13">Ar-Rad</option><option value="14">Ibrahim</option><option value="15">Al-Hijr</option><option value="16">An-Nahl</option><option value="17">Al-Isra</option><option value="18">Al-Kahf</option><option value="19">Maryam</option><option value="20">Taha</option><option value="21">Al-Anbiya</option><option value="22">Al-Hajj</option><option value="23">Al-Mumenoon</option><option value="24">An-Noor</option><option value="25">Al-Furqan</option><option value="26">Ash-Shuara</option><option value="27">An-Naml</option><option value="28">Al-Qasas</option><option value="29">Al-Ankaboot</option><option value="30">Ar-Room</option><option value="31">Luqman</option><option value="32">As-Sajda</option><option value="33">Al-Ahzab</option><option value="34">Saba</option><option value="35">Fatir</option><option value="36">Ya Seen</option><option value="37">As-Saaffat</option><option value="38">Sad</option><option value="39">Az-Zumar</option><option value="40">Ghafir</option><option value="41">Fussilat</option><option value="42">Ash-Shura</option><option value="43">Az-Zukhruf</option><option value="44">Ad-Dukhan</option><option value="45">Al-Jathiya</option><option value="46">Al-Ahqaf</option><option value="47">Muhammad</option><option value="48">Al-Fath</option><option value="49">Al-Hujraat</option><option value="50">Qaf</option><option value="51">Adh-Dhariyat</option><option value="52">At-tur</option><option value="53">An-Najm</option><option value="54">Al-Qamar</option><option value="55">Al-Rahman</option><option value="56">Al-Waqia</option><option value="57">Al-Hadid</option><option value="58">Al-Mujadila</option><option value="59">Al-Hashr</option><option value="60">Al-Mumtahina</option><option value="61">As-Saff</option><option value="62">Al-Jumua</option><option value="63">Al-Munafiqoon</option><option value="64">At-Taghabun</option><option value="65">At-Talaq</option><option value="66">At-Tahrim</option><option value="67">Al-Mulk</option><option value="68">Al-Qalam</option><option value="69">Al-Haaqqa</option><option value="70">Al-Maarij</option><option value="71">Nooh</option><option value="72">Al-Jinn</option><option value="73">Al-Muzzammil</option><option value="74">Al-Muddathir</option><option value="75">Al-Qiyama</option><option value="76">Al-Insan</option><option value="77">Al-Mursalat</option><option value="78">An-Naba</option><option value="79">An-Naziat</option><option value="80">Abasa</option><option value="81">At-Takwir</option><option value="82">AL-Infitar</option><option value="83">Al-Mutaffifin</option><option value="84">Al-Inshiqaq</option><option value="85">Al-Burooj</option><option value="86">At-Tariq</option><option value="87">Al-Ala</option><option value="88">Al-Ghashiya</option><option value="89">Al-Fajr</option><option value="90">Al-Balad</option><option value="91">Ash-Shams</option><option value="92">Al-Lail</option><option value="93">Ad-Dhuha</option><option value="94">Al-Inshirah</option><option value="95">At-Tin</option><option value="96">Al-Alaq</option><option value="97">Al-Qadr</option><option value="98">Al-Bayyina</option><option value="99">Al-Zalzala</option><option value="100">Al-Adiyat</option><option value="101">Al-Qaria</option><option value="102">At-Takathur</option><option value="103">Al-Asr</option><option value="104">Al-Humaza</option><option value="105">Al-fil</option><option value="106">Quraish</option><option value="107">Al-Maun</option><option value="108">Al-Kauther</option><option value="109">Al-Kafiroon</option><option value="110">An-Nasr</option><option value="111">Al-Masadd</option><option value="112">Al-Ikhlas</option><option value="113">Al-Falaq</option><option value="114">An-Nas</option></select>
+        </div>
+        <div class="col-4 py-2">
+            <a onclick="functionAdd()" class="btn-success m-3">Ajouter</a>
+            <a onclick="functionRaz()" class="btn-success m-3">Remise à zéro</a>
+        </div>
+        <div class="col-4 py-2">
+            {{ form_widget(EtatDesLieuxForm.sourateSupp) }}
+        </div>
+    </div>
+    <div class="row my-2">
+            <div class="col py-2">
+                {{ form_label(EtatDesLieuxForm.JoursDeDebut) }}
+            </div>
+            <div class="col">
+                {{ form_widget(EtatDesLieuxForm.JoursDeDebut) }}
+            </div>
+
+        <div class="col py-2">
+            {{ form_label(EtatDesLieuxForm.joursDeMemo) }}
+        </div>
+        <div class="col">
+            {{ form_widget(EtatDesLieuxForm.joursDeMemo) }}
+        </div>
+
+    </div>
+    <div class="row my-2">
+        <div class="col py-2">
+            {{ form_label(EtatDesLieuxForm.envoieMail) }}
+        </div>
+        <div class="col">
+            {{ form_widget(EtatDesLieuxForm.envoieMail) }}
+        </div>
+    </div>
+
+
 
     {{ form_end(EtatDesLieuxForm) }}
 
@@ -28,5 +101,30 @@
 
 {% block javascripts %}
     <script src="{{ asset('assets/js/sourate_verset_script.js') }}" type="text/javascript" ></script>
+    <script>
+
+        let choixSourate = document.getElementById('etat_des_lieux_sourate_supp')
+        let inputSourate = document.getElementById('etat_des_lieux_sourate_suppInput')
+        let destinationsourate = document.getElementById('etat_des_lieux_sourateSupp')
+        let tableauSourateSupp = [];
+        let tableauSourateSuppNum = [];
+
+        function functionAdd() {
+
+            if (!tableauSourateSupp.includes(choixSourate.options[document.getElementById('etat_des_lieux_sourate_supp').selectedIndex].text)) {
+                tableauSourateSupp.push(choixSourate.options[document.getElementById('etat_des_lieux_sourate_supp').selectedIndex].text);
+            }
+            //tableauSourateSuppNum.push(choixSourate.options[document.getElementById('etat_des_lieux_sourate_supp').selectedIndex].value)
+            destinationsourate.value  = tableauSourateSupp;
+            //destinationsourate.options.add(choixSourate.options[document.getElementById('etat_des_lieux_sourate_supp').selectedIndex]);
+        }
+
+        function functionRaz() {
+            tableauSourateSupp = [];
+            tableauSourateSuppNum = [];
+            destinationsourate.value = [];
+            console.log(destinationsourate)
+        }
+    </script>
 
 {% endblock %}
