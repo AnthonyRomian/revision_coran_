@@ -26,22 +26,35 @@ class BoucleDeRevisionController extends AbstractController
 
 
     /**
-     * @Route("/liste_etat/{id}", name="etat_list", methods={"GET"})
+     * @Route("/listeEtat/{id}", name="etat_list", methods={"GET"})
      */
-    public function liste_etat(User $id): Response
+    public function listeEtat(User $id): Response
     {
 
         $utilisateur = $this->getUser();
 
-        $etat_des_lieux_list = $this->entityManager->getRepository(EtatDesLieux::class)->find($id);
+        $id_util = $utilisateur->getId();
+
+        $etat_des_lieux_list = $this->entityManager->getRepository(EtatDesLieux::class)->findBy( array("user" => $id_util));
 
 
 
         return $this->render('revision/liste_revision.html.twig', [
             'utilisateur' => $utilisateur,
-            'id' => $id,
             'etat_des_lieux_list' => $etat_des_lieux_list,
         ]);
+    }
+
+    /**
+     * @Route("/listeEtat/delete/{id_edl}", name="delete", methods={"POST"})
+     */
+    public function deleteBoucle(EtatDesLieux $id_edl)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($id_edl);
+        $em->flush();
+
+
     }
 
 

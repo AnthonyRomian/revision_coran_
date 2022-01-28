@@ -8,6 +8,7 @@ use App\Entity\Verset;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
+use Symfony\Component\Form\ChoiceList\ChoiceList;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -28,7 +29,7 @@ class EtatDesLieuxType extends AbstractType
                 'mapped' => true,
                 'class' => Sourate::class,
                 'choice_label' => 'latin',
-                'placeholder' => 'Sourate début :',
+                'placeholder' => 'Sourate début',
                 'label' => 'Sourate début : ',
                 'required' => false
             ])
@@ -48,7 +49,7 @@ class EtatDesLieuxType extends AbstractType
                 'mapped' => true,
                 'class' => Sourate::class,
                 'choice_label' => 'latin',
-                'placeholder' => 'Sourate fin :',
+                'placeholder' => 'Sourate fin',
                 'label' => 'Sourate fin : ',
                 'required' => false
 
@@ -79,12 +80,15 @@ class EtatDesLieuxType extends AbstractType
                 'required' => false,
                 'widget' => 'single_text',
                 'input' => 'datetime',
-                'label' => 'Premier jours de la révision',
+                'label' => 'Premier jour de révision :',
                 'mapped' => true,
                 'by_reference' => true
             ])
             ->add('joursDeMemo', ChoiceType::class, [
-                'label' => 'Jours de mémorisation',
+                'label' => 'Jour de mémorisation :',
+                'label_attr' => [
+                    'class' => 'col',
+                ],
                 'mapped' => true,
                 'choices' => [
                     'Lundi' => 1,
@@ -94,14 +98,17 @@ class EtatDesLieuxType extends AbstractType
                     'Vendredi' => 5,
                     'Samedi' => 6,
                     'Dimanche' => 7,
-                ]
+                ],
+                'choice_attr' => [
+                    'class' => 'col-2',
+                ],
             ])
             ->add('envoieMail', ChoiceType::class,[
                 'label_attr' => [
                     'class' => 'label',
                 ],
                 'attr' => [
-                    'class' => 'row'],
+                    'class' => 'row py-3'],
                 'label' => 'Voulez vous recevoir un Email journalier de vos révisions ?',
                 'choices' => [
                     'Oui' => true,

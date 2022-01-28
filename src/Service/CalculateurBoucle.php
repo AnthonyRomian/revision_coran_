@@ -94,24 +94,23 @@ class CalculateurBoucle extends AbstractController
             }
             if ($tableauSourateAvant !== [null]) {
                 for ($x = 0; $x < sizeof($tableauSourateAvant); $x++) {
-                    $sourateSuppDebutPage = $apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'][array_key_first($apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'])]['page'];
-                    $sourateSuppFinPage = $apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'][array_key_last($apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'])]['page'];
+                    $souratesAvantDebutPage = $apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'][array_key_first($apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'])]['page'];
+                    $sourateAvantFinPage = $apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'][array_key_last($apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'])]['page'];
                     $range = ["num_sourate" => $tableauSourateAvant[$x],
-                        "premiere_page" => $sourateSuppDebutPage,
-                        "derniere_page" => $sourateSuppFinPage];
+                        "premiere_page" => $souratesAvantDebutPage,
+                        "derniere_page" => $sourateAvantFinPage];
                     $tableauSourateAvant[$x] = $range;
                 }
-
+                dump($tableauSourateAvant);
             }
             if ($tableauSourateApres !== [null]) {
                 for ($x = 0; $x < sizeof($tableauSourateApres); $x++) {
-                    $sourateSuppDebutPage = $apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'][array_key_first($apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'])]['page'];
-                    $sourateSuppFinPage = $apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'][array_key_last($apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'])]['page'];
+                    $sourateApresDebutPage = $apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'][array_key_first($apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'])]['page'];
+                    $sourateApresFinPage = $apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'][array_key_last($apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'])]['page'];
                     $range = ["num_sourate" => $tableauSourateApres[$x],
-                        "premiere_page" => $sourateSuppDebutPage,
-                        "derniere_page" => $sourateSuppFinPage,
-                        ];
-                    $tableauSourateApres[$x] = [$range];
+                        "premiere_page" => $sourateApresDebutPage,
+                        "derniere_page" => $sourateApresFinPage];
+                    $tableauSourateApres[$x] = $range;
                 }
             }
         } else {
@@ -159,10 +158,13 @@ class CalculateurBoucle extends AbstractController
             // nombre entier par jour de revision
             $nbre_page_jour = (int)($total_page / ($boucle_de_revision_1 - 1));
 
+            //reste a repartir sur la semaine
+            $rest_nbre_page_jour = $total_page % ($boucle_de_revision_1 - 1);
+            $relicat_jour = $rest_nbre_page_jour;
+
             // Regarder si sourateSupp null
             $borne_courante = $page_debutBouclePrincipale;
             // si null =>
-            dump($tableauSourateAvant !== [null]);
             if ($tableauSourateAvant !== [null]) {
                 for ($x = 0; $x < sizeof($tableauSourateAvant); $x++) {
                     if ($x == 0) {
@@ -174,15 +176,8 @@ class CalculateurBoucle extends AbstractController
                             $borne_courante = $recipe;
                         }
                     }
-                    //dump('recipe : ' . $recipe);
                 }
-                //dd($borne_courante);
             }
-            dump($tableauSourateAvant);
-
-            //reste a repartir sur la semaine
-            $rest_nbre_page_jour = $total_page % ($boucle_de_revision_1 - 1);
-            $relicat_jour = $rest_nbre_page_jour;
 
             // boucle principale pour decoupage des jours mettre dans tableau
             for ($i = 1; $i < $boucle_de_revision_1 + 1; $i++) {
@@ -219,25 +214,38 @@ class CalculateurBoucle extends AbstractController
                         $quotat_journalier = $nbre_page_jour;
                     }
                     $jours_de_revision->setNombrePage($quotat_journalier);
-                    dump("quotat journalier  : ".$quotat_journalier );
+                    dump("quotat journalier  : " . $quotat_journalier);
                     //de valeur depart + X valeur de gap -> valeur + nombre par jour entier
                     for ($j = 0; $j < $quotat_journalier; $j++) {
+
                         if ($j === 0) {
+                            dump('borne courante  : ' . $borne_courante);
                             $jours_de_revision->setPageDebut($borne_courante);
                             $borne_api_debut = $apiService->getPageData($borne_courante)['data']['surahs'];
                             $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
                             $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
                             $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
                             $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate);
-                        }
 
-                        if ($borne_courante > $page_finSourateSupp && $compteur == false){
-                            $borne_api_debut = $apiService->getPageData($borne_courante)['data']['surahs'];
-                            $num_sourate_inter_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
-                            $nom_sourate_inter_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
-                            $sourate_inter = $num_sourate_inter_debut . ' - ' . $nom_sourate_inter_debut;
-                            $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate .' jusqu\'à la fin ) puis page '. $page_debutBouclePrincipale. ' ( '.$sourate_inter );
-                            $compteur = true;
+                            if ($tableauSourateAvant !== [null] && $jours_de_revision->getPageDebut() + $quotat_journalier < $page_debutBouclePrincipale) {
+                                for ($a = 0; $a < sizeof($tableauSourateAvant); $a++) {
+                                    if ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && $compteur == false && sizeof($tableauSourateAvant) > 1 && $a < array_key_last($tableauSourateAvant)) {
+                                        $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $tableauSourateAvant[$a + 1]["premiere_page"]);
+                                    } elseif ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && $a == array_key_last($tableauSourateAvant)) {
+                                        $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $page_debutBouclePrincipale);
+
+                                    }
+                                }
+                            }
+                            if ($tableauSourateApres !== [null] && $jours_de_revision->getPageDebut() + $quotat_journalier > $page_finBouclePrincipale) {
+                                for ($a = 0; $a < sizeof($tableauSourateApres); $a++) {
+                                    if ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateApres[$a]["derniere_page"] && sizeof($tableauSourateApres) > 1) {
+                                        $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $tableauSourateApres[$a + 1]["premiere_page"]);
+                                    } elseif ($jours_de_revision->getPageDebut() < $page_finBouclePrincipale && $jours_de_revision->getPageDebut() + $quotat_journalier > $page_finBouclePrincipale && $jours_de_revision->getPageDebut() + $quotat_journalier < $tableauSourateApres[$a]["premiere_page"]) {
+                                        $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la page ' . $page_finBouclePrincipale . ' puis page ' . $tableauSourateApres[$a]["premiere_page"]);
+                                    }
+                                }
+                            }
                         }
                         if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
                             $jours_de_revision->setPageFin($borne_courante);
@@ -246,33 +254,34 @@ class CalculateurBoucle extends AbstractController
                             $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
                             $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
                             $jours_de_revision->setSourateFinBoucleJournaliere($last_sourate);
+
                         }
 
-                        if ($tableauSourateAvant !== [null]){
+                        if ($tableauSourateAvant !== [null]) {
                             //dump('borne courante : '. $borne_courante);
-                            for ($t = 0; $t < sizeof($tableauSourateAvant); $t++){
-                                if ($borne_courante == $tableauSourateAvant[$t]["derniere_page"] && (sizeof($tableauSourateAvant)-1 - $t) == 1  ){
-                                    $borne_courante = $tableauSourateAvant[$t+1]["premiere_page"]-1;
-                                    //dump('edition de la borne courante : '. $borne_courante);
-                                } elseif ($borne_courante == $tableauSourateAvant[$t]["derniere_page"] && $t == sizeof($tableauSourateAvant)-1 ) {
-                                    $borne_courante = $page_debutBouclePrincipale-1;
-                                    //dump('edition de la borne courante : '. $borne_courante);
+                            for ($t = 0; $t < sizeof($tableauSourateAvant); $t++) {
+                                if ($borne_courante == $tableauSourateAvant[$t]["derniere_page"] && (sizeof($tableauSourateAvant) - 1 - $t) == 1) {
+                                    $borne_courante = $tableauSourateAvant[$t + 1]["premiere_page"] - 1;
+                                } elseif ($borne_courante == $tableauSourateAvant[$t]["derniere_page"] && $t == sizeof($tableauSourateAvant) - 1) {
+                                    $borne_courante = $page_debutBouclePrincipale - 1;
+                                }
+                            }
+                        }
+                        if ($tableauSourateApres !== [null]) {
+                            for ($t = 0; $t < sizeof($tableauSourateApres); $t++) {
+                                if ($borne_courante == $page_finBouclePrincipale) {
+                                    $borne_courante = $tableauSourateApres[$t]["premiere_page"] - 1;
+                                } else if ($borne_courante == $tableauSourateApres[$t]["derniere_page"] && $t < array_key_last($tableauSourateApres)) {
+                                    $borne_courante = $tableauSourateApres[$t + 1]["premiere_page"] - 1;
                                 }
                             }
                         }
                         $borne_courante += 1;
-
-
                     }
-                    dump($jours_de_revision);
-
                     // persist des données jours de revision
                     $entityManager->persist($jours_de_revision);
                     $entityManager->flush();
                 }
-
-                // generer un pdf de rappel
-                // generer une suite d email avec portion a reviser
             }
         } else if ($quantité_hizb >= 15 && $quantité_hizb <= 28) {
             $boucle_de_revision->setDuree($boucle_de_revision_2);
@@ -283,8 +292,24 @@ class CalculateurBoucle extends AbstractController
 
             //reste a repartir sur la semaine
             $rest_nbre_page_jour = $total_page % ($boucle_de_revision_2 - 2);
-
             $relicat_jour = $rest_nbre_page_jour;
+
+            // Regarder si sourateSupp null
+            $borne_courante = $page_debutBouclePrincipale;
+            // si null =>
+            if ($tableauSourateAvant !== [null]) {
+                for ($x = 0; $x < sizeof($tableauSourateAvant); $x++) {
+                    if ($x == 0) {
+                        $recipe = $tableauSourateAvant[$x]["premiere_page"];
+                        $borne_courante = $recipe;
+                    } else {
+                        $recipe = $tableauSourateAvant[$x]["premiere_page"];
+                        if ($borne_courante > $recipe) {
+                            $borne_courante = $recipe;
+                        }
+                    }
+                }
+            }
 
             //boucle pour decoupage des jours mettre dans tableau
             for ($i = 0; $i < $boucle_de_revision_2 + 1; $i++) {
@@ -325,12 +350,33 @@ class CalculateurBoucle extends AbstractController
                     //de valeur depart + X valeur de gap -> valeur +nombre par jour entier
                     for ($j = 0; $j < $quotat_journalier; $j++) {
                         if ($j === 0) {
+                            dump('borne courante  : ' . $borne_courante);
                             $jours_de_revision->setPageDebut($borne_courante);
                             $borne_api_debut = $apiService->getPageData($borne_courante)['data']['surahs'];
                             $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
                             $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
                             $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
                             $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate);
+
+                            if ($tableauSourateAvant !== [null] && $jours_de_revision->getPageDebut() + $quotat_journalier < $page_debutBouclePrincipale) {
+                                for ($a = 0; $a < sizeof($tableauSourateAvant); $a++) {
+                                    if ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && sizeof($tableauSourateAvant) > 1 && $a < array_key_last($tableauSourateAvant)) {
+                                        $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $tableauSourateAvant[$a + 1]["premiere_page"]);
+                                    } elseif ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && $a == array_key_last($tableauSourateAvant)) {
+                                        $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $page_debutBouclePrincipale);
+
+                                    }
+                                }
+                            }
+                            if ($tableauSourateApres !== [null] && $jours_de_revision->getPageDebut() + $quotat_journalier > $page_finBouclePrincipale) {
+                                for ($a = 0; $a < sizeof($tableauSourateApres); $a++) {
+                                    if ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateApres[$a]["derniere_page"] && sizeof($tableauSourateApres) > 1) {
+                                        $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $tableauSourateApres[$a + 1]["premiere_page"]);
+                                    } elseif ($jours_de_revision->getPageDebut() < $page_finBouclePrincipale && $jours_de_revision->getPageDebut() + $quotat_journalier > $page_finBouclePrincipale && $jours_de_revision->getPageDebut() + $quotat_journalier < $tableauSourateApres[$a]["premiere_page"]) {
+                                        $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la page ' . $page_finBouclePrincipale . ' puis page ' . $tableauSourateApres[$a]["premiere_page"]);
+                                    }
+                                }
+                            }
                         }
                         if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
                             $jours_de_revision->setPageFin($borne_courante);
@@ -339,6 +385,27 @@ class CalculateurBoucle extends AbstractController
                             $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
                             $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
                             $jours_de_revision->setSourateFinBoucleJournaliere($last_sourate);
+
+                        }
+
+                        if ($tableauSourateAvant !== [null]) {
+                            //dump('borne courante : '. $borne_courante);
+                            for ($t = 0; $t < sizeof($tableauSourateAvant); $t++) {
+                                if ($borne_courante == $tableauSourateAvant[$t]["derniere_page"] && (sizeof($tableauSourateAvant) - 1 - $t) == 1) {
+                                    $borne_courante = $tableauSourateAvant[$t + 1]["premiere_page"] - 1;
+                                } elseif ($borne_courante == $tableauSourateAvant[$t]["derniere_page"] && $t == sizeof($tableauSourateAvant) - 1) {
+                                    $borne_courante = $page_debutBouclePrincipale - 1;
+                                }
+                            }
+                        }
+                        if ($tableauSourateApres !== [null]) {
+                            for ($t = 0; $t < sizeof($tableauSourateApres); $t++) {
+                                if ($borne_courante == $page_finBouclePrincipale) {
+                                    $borne_courante = $tableauSourateApres[$t]["premiere_page"] - 1;
+                                } else if ($borne_courante == $tableauSourateApres[$t]["derniere_page"] && $t < array_key_last($tableauSourateApres)) {
+                                    $borne_courante = $tableauSourateApres[$t + 1]["premiere_page"] - 1;
+                                }
+                            }
                         }
                         $borne_courante += 1;
                     }
@@ -360,6 +427,23 @@ class CalculateurBoucle extends AbstractController
             //reste a repartir sur la semaine
             $rest_nbre_page_jour = $total_page % ($boucle_de_revision_3 - 3);
             $relicat_jour = $rest_nbre_page_jour;
+
+            // Regarder si sourateSupp null
+            $borne_courante = $page_debutBouclePrincipale;
+            // si null =>
+            if ($tableauSourateAvant !== [null]) {
+                for ($x = 0; $x < sizeof($tableauSourateAvant); $x++) {
+                    if ($x == 0) {
+                        $recipe = $tableauSourateAvant[$x]["premiere_page"];
+                        $borne_courante = $recipe;
+                    } else {
+                        $recipe = $tableauSourateAvant[$x]["premiere_page"];
+                        if ($borne_courante > $recipe) {
+                            $borne_courante = $recipe;
+                        }
+                    }
+                }
+            }
 
             //boucle pour decoupage des jours mettre dans tableau
             for ($i = 0; $i < $boucle_de_revision_3 + 1; $i++) {
@@ -400,12 +484,33 @@ class CalculateurBoucle extends AbstractController
                     //de valeur depart + X valeur de gap -> valeur +nombre par jour entier
                     for ($j = 0; $j < $quotat_journalier; $j++) {
                         if ($j === 0) {
+                            dump('borne courante  : ' . $borne_courante);
                             $jours_de_revision->setPageDebut($borne_courante);
                             $borne_api_debut = $apiService->getPageData($borne_courante)['data']['surahs'];
                             $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
                             $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
                             $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
                             $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate);
+
+                            if ($tableauSourateAvant !== [null] && $jours_de_revision->getPageDebut() + $quotat_journalier < $page_debutBouclePrincipale) {
+                                for ($a = 0; $a < sizeof($tableauSourateAvant); $a++) {
+                                    if ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && sizeof($tableauSourateAvant) > 1 && $a < array_key_last($tableauSourateAvant)) {
+                                        $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $tableauSourateAvant[$a + 1]["premiere_page"]);
+                                    } elseif ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && $a == array_key_last($tableauSourateAvant)) {
+                                        $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $page_debutBouclePrincipale);
+
+                                    }
+                                }
+                            }
+                            if ($tableauSourateApres !== [null] && $jours_de_revision->getPageDebut() + $quotat_journalier > $page_finBouclePrincipale) {
+                                for ($a = 0; $a < sizeof($tableauSourateApres); $a++) {
+                                    if ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateApres[$a]["derniere_page"] && sizeof($tableauSourateApres) > 1) {
+                                        $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $tableauSourateApres[$a + 1]["premiere_page"]);
+                                    } elseif ($jours_de_revision->getPageDebut() < $page_finBouclePrincipale && $jours_de_revision->getPageDebut() + $quotat_journalier > $page_finBouclePrincipale && $jours_de_revision->getPageDebut() + $quotat_journalier < $tableauSourateApres[$a]["premiere_page"]) {
+                                        $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la page ' . $page_finBouclePrincipale . ' puis page ' . $tableauSourateApres[$a]["premiere_page"]);
+                                    }
+                                }
+                            }
                         }
                         if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
                             $jours_de_revision->setPageFin($borne_courante);
@@ -414,6 +519,27 @@ class CalculateurBoucle extends AbstractController
                             $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
                             $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
                             $jours_de_revision->setSourateFinBoucleJournaliere($last_sourate);
+
+                        }
+
+                        if ($tableauSourateAvant !== [null]) {
+                            //dump('borne courante : '. $borne_courante);
+                            for ($t = 0; $t < sizeof($tableauSourateAvant); $t++) {
+                                if ($borne_courante == $tableauSourateAvant[$t]["derniere_page"] && (sizeof($tableauSourateAvant) - 1 - $t) == 1) {
+                                    $borne_courante = $tableauSourateAvant[$t + 1]["premiere_page"] - 1;
+                                } elseif ($borne_courante == $tableauSourateAvant[$t]["derniere_page"] && $t == sizeof($tableauSourateAvant) - 1) {
+                                    $borne_courante = $page_debutBouclePrincipale - 1;
+                                }
+                            }
+                        }
+                        if ($tableauSourateApres !== [null]) {
+                            for ($t = 0; $t < sizeof($tableauSourateApres); $t++) {
+                                if ($borne_courante == $page_finBouclePrincipale) {
+                                    $borne_courante = $tableauSourateApres[$t]["premiere_page"] - 1;
+                                } else if ($borne_courante == $tableauSourateApres[$t]["derniere_page"] && $t < array_key_last($tableauSourateApres)) {
+                                    $borne_courante = $tableauSourateApres[$t + 1]["premiere_page"] - 1;
+                                }
+                            }
                         }
                         $borne_courante += 1;
                     }
@@ -421,8 +547,6 @@ class CalculateurBoucle extends AbstractController
                     $entityManager->persist($jours_de_revision);
                     $entityManager->flush();
                 }
-                // generer un pdf de rappel
-                // generer une suite d email avec portion a reviser
 
             }
         } else if ($quantité_hizb >= 43 && $quantité_hizb <= 56) {
@@ -436,6 +560,23 @@ class CalculateurBoucle extends AbstractController
             //reste a repartir sur la semaine
             $rest_nbre_page_jour = $total_page % ($boucle_de_revision_4 - 4);
             $relicat_jour = $rest_nbre_page_jour;
+
+            // Regarder si sourateSupp null
+            $borne_courante = $page_debutBouclePrincipale;
+            // si null =>
+            if ($tableauSourateAvant !== [null]) {
+                for ($x = 0; $x < sizeof($tableauSourateAvant); $x++) {
+                    if ($x == 0) {
+                        $recipe = $tableauSourateAvant[$x]["premiere_page"];
+                        $borne_courante = $recipe;
+                    } else {
+                        $recipe = $tableauSourateAvant[$x]["premiere_page"];
+                        if ($borne_courante > $recipe) {
+                            $borne_courante = $recipe;
+                        }
+                    }
+                }
+            }
 
             //boucle pour decoupage des jours mettre dans tableau
             for ($i = 0; $i < $boucle_de_revision_4 + 1; $i++) {
@@ -476,12 +617,33 @@ class CalculateurBoucle extends AbstractController
                     //de valeur depart + X valeur de gap -> valeur +nombre par jour entier
                     for ($j = 0; $j < $quotat_journalier; $j++) {
                         if ($j === 0) {
+                            dump('borne courante  : ' . $borne_courante);
                             $jours_de_revision->setPageDebut($borne_courante);
                             $borne_api_debut = $apiService->getPageData($borne_courante)['data']['surahs'];
                             $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
                             $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
                             $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
                             $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate);
+
+                            if ($tableauSourateAvant !== [null] && $jours_de_revision->getPageDebut() + $quotat_journalier < $page_debutBouclePrincipale) {
+                                for ($a = 0; $a < sizeof($tableauSourateAvant); $a++) {
+                                    if ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && sizeof($tableauSourateAvant) > 1 && $a < array_key_last($tableauSourateAvant)) {
+                                        $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $tableauSourateAvant[$a + 1]["premiere_page"]);
+                                    } elseif ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && $a == array_key_last($tableauSourateAvant)) {
+                                        $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $page_debutBouclePrincipale);
+
+                                    }
+                                }
+                            }
+                            if ($tableauSourateApres !== [null] && $jours_de_revision->getPageDebut() + $quotat_journalier > $page_finBouclePrincipale) {
+                                for ($a = 0; $a < sizeof($tableauSourateApres); $a++) {
+                                    if ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateApres[$a]["derniere_page"] && sizeof($tableauSourateApres) > 1) {
+                                        $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $tableauSourateApres[$a + 1]["premiere_page"]);
+                                    } elseif ($jours_de_revision->getPageDebut() < $page_finBouclePrincipale && $jours_de_revision->getPageDebut() + $quotat_journalier > $page_finBouclePrincipale && $jours_de_revision->getPageDebut() + $quotat_journalier < $tableauSourateApres[$a]["premiere_page"]) {
+                                        $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la page ' . $page_finBouclePrincipale . ' puis page ' . $tableauSourateApres[$a]["premiere_page"]);
+                                    }
+                                }
+                            }
                         }
                         if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
                             $jours_de_revision->setPageFin($borne_courante);
@@ -490,6 +652,27 @@ class CalculateurBoucle extends AbstractController
                             $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
                             $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
                             $jours_de_revision->setSourateFinBoucleJournaliere($last_sourate);
+
+                        }
+
+                        if ($tableauSourateAvant !== [null]) {
+                            //dump('borne courante : '. $borne_courante);
+                            for ($t = 0; $t < sizeof($tableauSourateAvant); $t++) {
+                                if ($borne_courante == $tableauSourateAvant[$t]["derniere_page"] && (sizeof($tableauSourateAvant) - 1 - $t) == 1) {
+                                    $borne_courante = $tableauSourateAvant[$t + 1]["premiere_page"] - 1;
+                                } elseif ($borne_courante == $tableauSourateAvant[$t]["derniere_page"] && $t == sizeof($tableauSourateAvant) - 1) {
+                                    $borne_courante = $page_debutBouclePrincipale - 1;
+                                }
+                            }
+                        }
+                        if ($tableauSourateApres !== [null]) {
+                            for ($t = 0; $t < sizeof($tableauSourateApres); $t++) {
+                                if ($borne_courante == $page_finBouclePrincipale) {
+                                    $borne_courante = $tableauSourateApres[$t]["premiere_page"] - 1;
+                                } else if ($borne_courante == $tableauSourateApres[$t]["derniere_page"] && $t < array_key_last($tableauSourateApres)) {
+                                    $borne_courante = $tableauSourateApres[$t + 1]["premiere_page"] - 1;
+                                }
+                            }
                         }
                         $borne_courante += 1;
                     }
@@ -497,9 +680,6 @@ class CalculateurBoucle extends AbstractController
                     $entityManager->persist($jours_de_revision);
                     $entityManager->flush();
                 }
-                // generer un pdf de rappel
-                // generer une suite d email avec portion a reviser
-
             }
         } else if ($quantité_hizb >= 56 && $quantité_hizb <= 60) {
             $boucle_de_revision->setDuree($boucle_de_revision_5);
@@ -511,6 +691,23 @@ class CalculateurBoucle extends AbstractController
             //reste a repartir sur la semaine
             $rest_nbre_page_jour = $total_page % ($boucle_de_revision_5 - 4);
             $relicat_jour = $rest_nbre_page_jour;
+
+            // Regarder si sourateSupp null
+            $borne_courante = $page_debutBouclePrincipale;
+            // si null =>
+            if ($tableauSourateAvant !== [null]) {
+                for ($x = 0; $x < sizeof($tableauSourateAvant); $x++) {
+                    if ($x == 0) {
+                        $recipe = $tableauSourateAvant[$x]["premiere_page"];
+                        $borne_courante = $recipe;
+                    } else {
+                        $recipe = $tableauSourateAvant[$x]["premiere_page"];
+                        if ($borne_courante > $recipe) {
+                            $borne_courante = $recipe;
+                        }
+                    }
+                }
+            }
 
             //boucle pour decoupage des jours mettre dans tableau
             for ($i = 0; $i < $boucle_de_revision_5 + 1; $i++) {
@@ -551,12 +748,33 @@ class CalculateurBoucle extends AbstractController
                     //de valeur depart + X valeur de gap -> valeur +nombre par jour entier
                     for ($j = 0; $j < $quotat_journalier; $j++) {
                         if ($j === 0) {
+                            dump('borne courante  : ' . $borne_courante);
                             $jours_de_revision->setPageDebut($borne_courante);
                             $borne_api_debut = $apiService->getPageData($borne_courante)['data']['surahs'];
                             $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
                             $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
                             $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
                             $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate);
+
+                            if ($tableauSourateAvant !== [null] && $jours_de_revision->getPageDebut() + $quotat_journalier < $page_debutBouclePrincipale) {
+                                for ($a = 0; $a < sizeof($tableauSourateAvant); $a++) {
+                                    if ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && sizeof($tableauSourateAvant) > 1 && $a < array_key_last($tableauSourateAvant)) {
+                                        $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $tableauSourateAvant[$a + 1]["premiere_page"]);
+                                    } elseif ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && $a == array_key_last($tableauSourateAvant)) {
+                                        $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $page_debutBouclePrincipale);
+
+                                    }
+                                }
+                            }
+                            if ($tableauSourateApres !== [null] && $jours_de_revision->getPageDebut() + $quotat_journalier > $page_finBouclePrincipale) {
+                                for ($a = 0; $a < sizeof($tableauSourateApres); $a++) {
+                                    if ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateApres[$a]["derniere_page"] && sizeof($tableauSourateApres) > 1) {
+                                        $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $tableauSourateApres[$a + 1]["premiere_page"]);
+                                    } elseif ($jours_de_revision->getPageDebut() < $page_finBouclePrincipale && $jours_de_revision->getPageDebut() + $quotat_journalier > $page_finBouclePrincipale && $jours_de_revision->getPageDebut() + $quotat_journalier < $tableauSourateApres[$a]["premiere_page"]) {
+                                        $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la page ' . $page_finBouclePrincipale . ' puis page ' . $tableauSourateApres[$a]["premiere_page"]);
+                                    }
+                                }
+                            }
                         }
                         if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
                             $jours_de_revision->setPageFin($borne_courante);
@@ -565,6 +783,27 @@ class CalculateurBoucle extends AbstractController
                             $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
                             $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
                             $jours_de_revision->setSourateFinBoucleJournaliere($last_sourate);
+
+                        }
+
+                        if ($tableauSourateAvant !== [null]) {
+                            //dump('borne courante : '. $borne_courante);
+                            for ($t = 0; $t < sizeof($tableauSourateAvant); $t++) {
+                                if ($borne_courante == $tableauSourateAvant[$t]["derniere_page"] && (sizeof($tableauSourateAvant) - 1 - $t) == 1) {
+                                    $borne_courante = $tableauSourateAvant[$t + 1]["premiere_page"] - 1;
+                                } elseif ($borne_courante == $tableauSourateAvant[$t]["derniere_page"] && $t == sizeof($tableauSourateAvant) - 1) {
+                                    $borne_courante = $page_debutBouclePrincipale - 1;
+                                }
+                            }
+                        }
+                        if ($tableauSourateApres !== [null]) {
+                            for ($t = 0; $t < sizeof($tableauSourateApres); $t++) {
+                                if ($borne_courante == $page_finBouclePrincipale) {
+                                    $borne_courante = $tableauSourateApres[$t]["premiere_page"] - 1;
+                                } else if ($borne_courante == $tableauSourateApres[$t]["derniere_page"] && $t < array_key_last($tableauSourateApres)) {
+                                    $borne_courante = $tableauSourateApres[$t + 1]["premiere_page"] - 1;
+                                }
+                            }
                         }
                         $borne_courante += 1;
                     }
@@ -572,9 +811,6 @@ class CalculateurBoucle extends AbstractController
                     $entityManager->persist($jours_de_revision);
                     $entityManager->flush();
                 }
-                // generer un pdf de rappel
-                // generer une suite d email avec portion a reviser
-
             }
         }
         return $boucle_de_revision;

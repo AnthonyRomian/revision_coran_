@@ -3,12 +3,13 @@
 {% block title %}Liste des révisions{% endblock %}
 
 {% block body %}
+    {{ dump() }}
     <div >{%  include('include/nav.html.twig') %}</div>
     <h3>liste des plannifications de révision</h3>
 
 
         <div class="d-flex flex-wrap m-2 center" >
-    {% for e in utilisateur.etatDesLieux %}
+    {% for e in etat_des_lieux_list %}
             <div class="card flex-fill m-2" width="33%"  style="width: 20rem;">
                 <div class="card-header justify-center">
                     <h5>{{ e.JoursDeDebut|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</h5>
@@ -18,10 +19,16 @@
                     <h6>Verset de fin  : {{ e.sourateDebutVersetFin }}</h6>
                     <h6>Sourate Fin : {{ e.sourateFin }}</h6>
                     <h6>Verset de fin  : {{ e.sourateFinVersetFin }}</h6>
+                    <h6>Sourate(s) supp  : {% for s in e.sourateSupp %} {{ s }}
+                        {% endfor %}
+                    </h6>
+
                 </div>
                 <div class="card-footer">
                     <a href="{{ path('resultat', {'id': e.id}) }}"><button class="btn btn-success mr-3">Acceder au plan de révision</button></a>
-
+                    <a onclick="functionDelete()">
+                        <button id="boutonSupprimer" value="{{ e.id }}" class="btn btn-success mr-3">Supprimer la révision</button>
+                    </a>
                 </div>
             </div>
     {% endfor %}
@@ -32,6 +39,30 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script src="{{ asset('assets/js/sourate_verset_script.js') }}" type="text/javascript" ></script>
+    <script>
+        let bouton_delete = document.getElementById('boutonSupprimer').value;
+        /* FUNCTION SUPPR */
+        function functionDelete() {
+                    // j'affiche un message de suppression en cours de l'utilisateur
+                    console.log('Appel de la fonction delete'+bouton_delete)
+
+                    // Executer une requete pour chaque selectionné
+                    fetch("/revision_coran/public/listeEtat/delete/"+ bouton_delete, {
+                        method: "POST"
+                    }).then(response => {
+                            if (response.ok) {
+                                // j'appelle la fonction de réactualisation de la page
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 1000);
+                            } else {
+                                setTimeout(function () {
+                                    location.reload();
+                                }, 1000);
+                                console.error('Retour du serveur : ', response.status)
+                            }
+                    });
+        }
+    </script>
 
 {% endblock %}

@@ -31,6 +31,7 @@ class BoucleDeRevision
 
     /**
      * @ORM\ManyToOne(targetEntity=EtatDesLieux::class, inversedBy="BoucleDeRevision",cascade={"persist"})
+     *
      */
     private $etatDesLieux;
 

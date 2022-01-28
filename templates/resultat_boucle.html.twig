@@ -33,8 +33,8 @@
                 </tbody>
             {% endfor %}
         </table>
-        <a href="{{ path('etat_list', {'id': app.user.id}) }}" class="btn btn-success mb-2">Retour à la liste</a>
-        <a href="{{ path('download',{'id': etat_des_lieux.id }) }}" class="btn btn-success mb-2">Télécharger en PDF</a>
+        <a href="{{ path('etat_list', {'id': app.user.id}) }}" ><button class="btn btn-success mb-2">Retour à la liste</button></a>
+        <a href="{{ path('download',{'id': etat_des_lieux.id }) }}" ><button class="btn btn-success mb-2"> Télécharger en PDF </button></a>
     </div>
 
 

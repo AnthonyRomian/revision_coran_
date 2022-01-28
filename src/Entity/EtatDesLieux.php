@@ -34,6 +34,7 @@ class EtatDesLieux
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="etatDesLieux")
+     *
      */
     private $user;
 
@@ -68,6 +69,7 @@ class EtatDesLieux
 
     /**
      * @ORM\OneToMany(targetEntity=BoucleDeRevision::class, mappedBy="etatDesLieux")
+     *
      */
     private $BoucleDeRevision;
 
