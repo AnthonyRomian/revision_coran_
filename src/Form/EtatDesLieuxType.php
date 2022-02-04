@@ -34,13 +34,13 @@ class EtatDesLieuxType extends AbstractType
                 'required' => false
             ])
             ->add('sourate_debut_verset_debut', ChoiceType::class, [
-                'placeholder' => 'Premier verset',
+                'placeholder' => 'Choisir verset',
                 'required' => false,
                 'mapped' => true,
                 'label' => 'Verset début : '
             ])
             ->add('sourate_debut_verset_fin', ChoiceType::class, [
-                'placeholder' => 'Dernier verset',
+                'placeholder' => 'Choisir verset',
                 'required' => false,
                 'label' => 'Verset fin : '
 
@@ -55,23 +55,25 @@ class EtatDesLieuxType extends AbstractType
 
             ])
             ->add('sourate_fin_verset_debut', ChoiceType::class, [
-                'placeholder' => 'Premier verset',
+                'placeholder' => 'Choisir verset',
                 'required' => false,
                 'label' => 'Verset début : '
 
 
             ])
             ->add('sourate_fin_verset_fin', ChoiceType::class, [
-                'placeholder' => 'Dernier verset',
+                'placeholder' => 'Choisir verset',
                 'required' => false,
                 'label' => 'Verset fin : '
 
             ])
             ->add('sourateSupp', TextType::class,[
                 'required' => false,
+                'disabled' => true,
                 'label_attr' => [
                     'class' => 'label'
                 ],
+
                 'label' => 'Sourate Supplémentaire : ',
                 'data'=> [null]
             ])
@@ -121,7 +123,7 @@ class EtatDesLieuxType extends AbstractType
             ->add('Valider', SubmitType::class, [
                 'attr' => [
                    'class' => 'btn-success mr-3'],
-                'label' => 'Génerer le plan de révision'
+                'label' => 'Générer le planning de révision'
             ]);
 
         $builder->get('sourateSupp')
@@ -146,20 +148,20 @@ class EtatDesLieuxType extends AbstractType
                     'class' => Verset::class,
                     'choices' => $versets_debut,
                     'choice_label' => 'numero',
-                    'placeholder' => 'Choisir le premier verset',
+                    'placeholder' => 'Choisir verset',
                     'mapped' => true,
                     'label' => 'Verset début : ',
-                    'required' => false
+                    'required' => true
 
                 ])
                 ->add('sourate_debut_verset_fin', EntityType::class, [
                     'class' => Verset::class,
                     'choices' => $versets_fin,
                     'choice_label' => 'numero',
-                    'placeholder' => 'Choisir le dernier verset',
+                    'placeholder' => 'Choisir verset',
                     'mapped' => true,
                     'label' => 'Verset fin : ',
-                    'required' => false
+                    'required' => true
 
                 ]);
         };
@@ -172,7 +174,7 @@ class EtatDesLieuxType extends AbstractType
                     'class' => Verset::class,
                     'choices' => $versets_debut_2,
                     'choice_label' => 'numero',
-                    'placeholder' => 'Choisir le premier verset',
+                    'placeholder' => 'Choisir verset',
                     'mapped' => true,
                     'label' => 'Verset début : '
 
@@ -181,7 +183,7 @@ class EtatDesLieuxType extends AbstractType
                     'class' => Verset::class,
                     'choices' => $versets_fin_2,
                     'choice_label' => 'numero',
-                    'placeholder' => 'Choisir le dernier verset',
+                    'placeholder' => 'Choisir verset',
                     'mapped' => true,
                     'label' => 'Verset fin : '
                 ]);

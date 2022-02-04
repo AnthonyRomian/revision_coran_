@@ -29,6 +29,7 @@ class EtatDesLieux
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotNull
+     * @Assert\NotEqualTo(propertyPath="sourate_debut")
      */
     private $sourate_fin;
 
@@ -45,25 +46,26 @@ class EtatDesLieux
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotNull
+     * @Assert\LessThan(propertyPath="sourate_debut_verset_fin")
      */
     private $sourate_debut_verset_debut;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotNull
+     * @Assert\GreaterThan(propertyPath="sourate_debut_verset_debut")
+     *
      */
     private $sourate_debut_verset_fin;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotNull
+     * @Assert\LessThan(propertyPath="sourate_fin_verset_fin")
      */
     private $sourate_fin_verset_debut;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotNull
+     * @Assert\GreaterThan(propertyPath="sourate_fin_verset_debut")
      */
     private $sourate_fin_verset_fin;
 
@@ -81,6 +83,8 @@ class EtatDesLieux
     /**
      * @ORM\Column(type="datetime")
      * @Assert\NotNull
+     * @Assert\GreaterThanOrEqual(value="today",
+     *     message="La date ne peut pas être dans le passé")
      */
     private $JoursDeDebut;
 

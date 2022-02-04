@@ -3,18 +3,17 @@
 {% block title %}Liste des révisions{% endblock %}
 
 {% block body %}
-    {{ dump() }}
     <div >{%  include('include/nav.html.twig') %}</div>
-    <h3>liste des plannifications de révision</h3>
+    <h3 class="bg-success rounded text-black py-2 my-1 text-center">Liste des plannings de révision</h3>
 
 
         <div class="d-flex flex-wrap m-2 center" >
     {% for e in etat_des_lieux_list %}
             <div class="card flex-fill m-2" width="33%"  style="width: 20rem;">
-                <div class="card-header justify-center">
+                <div class="card-header justify-center text-center">
                     <h5>{{ e.JoursDeDebut|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</h5>
                 </div>
-                <div class="card-body">
+                <div class="card-body text-center">
                     <h6>Sourate début : {{ e.sourateDebut }}</h6>
                     <h6>Verset de fin  : {{ e.sourateDebutVersetFin }}</h6>
                     <h6>Sourate Fin : {{ e.sourateFin }}</h6>
@@ -24,10 +23,10 @@
                     </h6>
 
                 </div>
-                <div class="card-footer">
-                    <a href="{{ path('resultat', {'id': e.id}) }}"><button class="btn btn-success mr-3">Acceder au plan de révision</button></a>
+                <div class="card-footer text-center">
+                    <a href="{{ path('resultat', {'id': e.id}) }}"><button class="btn btn-success m-1 ">Acceder au plan de révision</button></a>
                     <a onclick="functionDelete()">
-                        <button id="boutonSupprimer" value="{{ e.id }}" class="btn btn-success mr-3">Supprimer la révision</button>
+                        <button id="boutonSupprimer" value="{{ e.id }}" class="btn btn-success m-1">Supprimer la révision</button>
                     </a>
                 </div>
             </div>

@@ -30,7 +30,7 @@ class HomeController extends AbstractController
 
         $utilisateur = $this->getUser();
 
-        $user_id = $utilisateur->getId();
+        //$user_id = $utilisateur->getId();
 
         $etatDesLieux = new EtatDesLieux();
         $etatDesLieuxForm = $this->createForm(EtatDesLieuxType::class, $etatDesLieux);
@@ -50,7 +50,6 @@ class HomeController extends AbstractController
             $id_edl = $etatDesLieux->getId();
 
             return $this->redirectToRoute('resultat', [
-                'id_user' => $user_id,
                 'id' => $id_edl,
                 'utilisateur' => $utilisateur
             ]);

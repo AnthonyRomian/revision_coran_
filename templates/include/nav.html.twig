@@ -1,11 +1,14 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         {% if app.user %}
-            <a class="navbar-brand" href="{{ path('home') }}"><img src="{{ asset('assets/img/logo_coran_revision.png')}}" alt="logo"></a>
+            <a class="navbar-brand" href="{{ path('home') }}"><img
+                        src="{{ asset('assets/img/logo_coran_revision.png') }}" alt="logo"></a>
         {% else %}
-            <a class="navbar-brand" href="{{ path('app_login') }}">Révision</a>
+            <a class="navbar-brand" href="{{ path('app_login') }}"><img
+                        src="{{ asset('assets/img/logo_coran_revision.png') }}" alt="logo"></a>
         {% endif %}
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
@@ -13,18 +16,29 @@
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{{ path('home') }}" title="Accueil">Accueil</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('profil', {'id': app.user.id}) }}" title="Mon profil">Mon profil</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('etat_list', {'id': app.user.id}) }}" title="liste des sorties">Liste des révisions</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('home') }}" title="création de révision">Nouvelle révision</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_logout') }}" title="logout">Se déconnecter</a>
-                </li>
+                {% if app.user %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('profil', {'id': app.user.id}) }}" title="Mon profil">Mon
+                            profil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('etat_list', {'id': app.user.id}) }}"
+                           title="liste des révisions">Liste des révisions</a>
+                    </li>
+                {% endif %}
+                {% if app.user %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_logout') }}" title="logout">Se déconnecter</a>
+                    </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_login') }}" title="Login">Se connecter</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_register') }}" title="création de compte">Créer un compte</a>
+                        </li>
+                {% endif %}
+
             </ul>
         </div>
     </div>

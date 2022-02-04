@@ -1,10 +1,12 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Editer profil{% endblock %}
+
 {% block body %}
     <div >{%  include('include/nav.html.twig') %}</div>
+    <h3 class="bg-success rounded text-black py-2 my-1 text-center">Editer le profil</h3>
 
     <div class="container">
-        <h1 class="text-center mb-3 mt-3">Mon profil</h1>
         {{ form_start(profilForm) }}
         {{ form_widget(profilForm) }}
         <div class="d-flex justify-content-center mt-3">
@@ -17,10 +19,6 @@
         {{ form_end(profilForm) }}
         <a href="{{ path('home') }}"><button class="btn btn-success mr-3">Retour à l accueil</button></a>
     </div>
-
-{% endblock %}
-
-{% block title %}
 
 {% endblock %}
 

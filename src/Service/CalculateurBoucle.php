@@ -65,6 +65,8 @@ class CalculateurBoucle extends AbstractController
         $tableauSourateAvant[] = null;
         $tableauSourateApres[] = null;
         $page_finSourateSupp = 605;
+        $hizbSourateAvant = 0;
+        $hizbSourateApres = 0;
 
 
         if ($tableauSourateSupp[0] !== "") {
@@ -73,6 +75,8 @@ class CalculateurBoucle extends AbstractController
             dump($tableauSourateSupp);
             $tableauSourateAvant = [];
             $tableauSourateApres = [];
+
+
 
             for ($y = 0; $y < sizeof($tableauSourateSupp); $y++) {
                 $sourateSupp = $Souraterepo->findOneBy(['latin' => $tableauSourateSupp[$y]]);
@@ -96,17 +100,25 @@ class CalculateurBoucle extends AbstractController
                 for ($x = 0; $x < sizeof($tableauSourateAvant); $x++) {
                     $souratesAvantDebutPage = $apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'][array_key_first($apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'])]['page'];
                     $sourateAvantFinPage = $apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'][array_key_last($apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'])]['page'];
+                    $quartHizbdebut = $apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'][array_key_first($apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'])]['hizbQuarter'];
+                    $quartHizbfin = $apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'][array_key_last($apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'])]['hizbQuarter'];
+                    $hizbSourateAvant += ($quartHizbfin-$quartHizbdebut)/4;
+
                     $range = ["num_sourate" => $tableauSourateAvant[$x],
                         "premiere_page" => $souratesAvantDebutPage,
                         "derniere_page" => $sourateAvantFinPage];
                     $tableauSourateAvant[$x] = $range;
                 }
-                dump($tableauSourateAvant);
+
             }
             if ($tableauSourateApres !== [null]) {
                 for ($x = 0; $x < sizeof($tableauSourateApres); $x++) {
                     $sourateApresDebutPage = $apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'][array_key_first($apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'])]['page'];
                     $sourateApresFinPage = $apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'][array_key_last($apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'])]['page'];
+                    $quartHizbdebut = $apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'][array_key_first($apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'])]['hizbQuarter'];
+                    $quartHizbfin = $apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'][array_key_last($apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'])]['hizbQuarter'];
+                    $hizbSourateApres += ($quartHizbfin-$quartHizbdebut)/4;
+
                     $range = ["num_sourate" => $tableauSourateApres[$x],
                         "premiere_page" => $sourateApresDebutPage,
                         "derniere_page" => $sourateApresFinPage];
@@ -145,9 +157,10 @@ class CalculateurBoucle extends AbstractController
             $handicap_quart_hizb += 0.75;
         }
 
-        //TODO ajouter nombre hizb pour sourate supp
         $hizb_total = (($borne_sup + 1) - $borne_inf);
+
         $quantité_hizb = $hizb_total - $handicap_quart_hizb;
+        $quantité_hizb += $hizbSourateAvant+$hizbSourateApres;
         $boucle_de_revision->setNbreHizb($quantité_hizb);
 
         //tableau de la boucle
