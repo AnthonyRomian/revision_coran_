@@ -46,12 +46,12 @@ class RegistrationFormType extends AbstractType
                         'max' => 4096,
                     ]),
                 ],
-            ])
-            ->add('Valider', SubmitType::class, [
+            ]);
+            /*->add('Valider', SubmitType::class, [
                 'attr' => [
                     'class' => 'btn-success mr-3'],
                 'label' => 'Créer un compte'
-            ]);
+            ]);*/
 
     }
 
