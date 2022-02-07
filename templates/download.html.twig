@@ -8,38 +8,46 @@
 <body>
 
 <style>
+    @page {
+        padding: 160px 0 80px 0;
+        margin: 0;
+        page-break-after: always;
+    }
+
     body {
-        background-image: url("http://localhost/revision_coran/public/assets/img/cadre_coran_2.png");
+        background-image: url("http://localhost/revision_coran/public/assets/img/A4_cadre_quran.png");
         background-size: cover;
     }
 
-    /*@media (min-width: 992px) {
-        .container {
-            max-width: 960px;
-        }
-
-    }
-
-    @media (min-width: 768px) {
-        .container {
-            max-width: 720px;
-        }
-    }
-
-    @media (min-width: 576px) {
-        .container {
-            max-width: 540px;
-        }
-    }*/
-
     .container {
-        width: 75%;
-        margin-top: 15%;
-        padding-right: 15px;
-        padding-left: 15px;
+        width: 80%;
+        margin-top: 55px;
+        margin-bottom: 40px;
+        padding-right: 0;
+        padding-left: 0;
         margin-right: auto;
-        margin-left: auto;
+        margin-left: 81px;
 
+    }
+
+    h2 {
+        display: block;
+        font-size: 1.5em;
+        margin-block-start: 0.6em;
+        margin-block-end: 0.1em;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+        font-weight: bold;
+    }
+
+    h3 {
+        display: block;
+        font-size: 1.1em;
+        margin-block-start: 0.6em;
+        margin-block-end: 0.6em;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+        font-weight: bold;
     }
 
 
@@ -53,7 +61,7 @@
 
     .table {
         width: 100%;
-        margin-bottom: 1rem;
+        margin-bottom: 0.1rem;
         color: #212529;
     }
 
@@ -76,12 +84,18 @@
         border-bottom: 2px solid #dee2e6;
     }
 
+    th {
+        display: table-cell;
+        vertical-align: inherit;
+        font-weight: bold;
+    }
+
     .table-bordered td, .table-bordered th {
         border: 1px solid #dee2e6;
     }
 
     .table td, .table th {
-        padding: 0.75rem;
+        padding: 0.39rem;
         vertical-align: top;
         border-top: 1px solid #dee2e6;
     }
@@ -96,28 +110,38 @@
 </style>
 {% block body %}
     <div class="container">
-        <h1 class="text-center">Planning de révision</h1>
-        <h3 class="text-center">{{ utilisateur.prenom|capitalize }}, votre boucle de révision
-            comporte environ {{ boucle.nbreHizb }} hizb, soit {{ boucle.nombrePages }} pages, elle aura une durée
-            de {{ boucle.duree }} jours </h3>
+        {#<h2 class="text-center">Planning de révision</h2>#}
+
         <table class="table table-striped table-hover table-bordered">
             <thead class="thead-dark">
             <tr>
-                <th scope="col">Jour</th>
-                <th scope="col">Date du jour</th>
-                <th scope="col">Page de debut</th>
-                <th scope="col">Jusqu'à</th>
-                <th scope="col">Page de fin</th>
+                <th class="text-center"style="width: 6%" scope="col">Jour</th>
+                <th class="text-center" style="width: 17%" scope="col">Date du jour</th>
+                <th class="text-center" scope="col">Page de debut</th>
+                <th class="text-center"style="width: 10%" scope="col">Jusqu'à</th>
+                <th class="text-center" scope="col">Page de fin</th>
             </tr>
             </thead>
             {% for j in boucle.JoursBoucle %}
                 <tbody class="table-striped">
-                <tr>
-                    <td>N° {{ j.jours }}</td>
-                    <td>{{ j.Date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY")|capitalize }} </td>
-                    <td>Page {{ j.PageDebut }} ( {{ j.sourateDebutBoucleJournaliere }} )</td>
-                    <td> =></td>
-                    <td>Page {{ j.PageFin }} ( {{ j.sourateFinBoucleJournaliere }} )</td>
+                <tr >
+                    <td class="text-center">N°{{ j.jours }}</td>
+                    <td class="text-center">{{ j.Date|format_datetime(locale='fr',pattern="EEE dd MMM") }}</td>
+                    {% if  j.PageDebut == "memorisation" %}
+                        <td class="text-center">Jour de {{ j.PageDebut }}</td>
+                    {% else %}
+                        <td class="text-center">p {{ j.PageDebut }} ( {{ j.sourateDebutBoucleJournaliere }} )</td>
+                    {% endif %}
+                    {% if  j.PageDebut == "memorisation" %}
+                        <td class="text-center"></td>
+                    {% else %}
+                        <td class="text-center">jusqu'à</td>
+                    {% endif %}
+                    {% if  j.PageDebut == "memorisation" %}
+                        <td class="text-center">Jour de {{ j.PageFin }}</td>
+                    {% else %}
+                        <td class="text-center">p {{ j.PageFin }} ( {{ j.sourateFinBoucleJournaliere }} )</td>
+                    {% endif %}
                 </tr>
                 </tbody>
             {% endfor %}

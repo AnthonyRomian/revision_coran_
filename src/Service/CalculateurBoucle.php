@@ -62,6 +62,7 @@ class CalculateurBoucle extends AbstractController
 
         //-------------- Sourate supp -----------------------//
         $tableauSourateSupp = explode(",", $etatDesLieux->getSourateSupp()[0]);
+
         $tableauSourateAvant[] = null;
         $tableauSourateApres[] = null;
         $page_finSourateSupp = 605;
@@ -325,7 +326,7 @@ class CalculateurBoucle extends AbstractController
             }
 
             //boucle pour decoupage des jours mettre dans tableau
-            for ($i = 0; $i < $boucle_de_revision_2 + 1; $i++) {
+            for ($i = 1; $i < $boucle_de_revision_2 + 1; $i++) {
                 $jours_de_revision = new JoursDeBoucle();
                 $jours_de_revision->setJours($i);
                 $jours_courant = $joursDebut;
@@ -459,7 +460,7 @@ class CalculateurBoucle extends AbstractController
             }
 
             //boucle pour decoupage des jours mettre dans tableau
-            for ($i = 0; $i < $boucle_de_revision_3 + 1; $i++) {
+            for ($i = 1; $i < $boucle_de_revision_3 + 1; $i++) {
                 $jours_de_revision = new JoursDeBoucle();
                 $jours_de_revision->setJours($i);
                 $jours_courant = $joursDebut;
@@ -592,7 +593,7 @@ class CalculateurBoucle extends AbstractController
             }
 
             //boucle pour decoupage des jours mettre dans tableau
-            for ($i = 0; $i < $boucle_de_revision_4 + 1; $i++) {
+            for ($i = 1; $i < $boucle_de_revision_4 + 1; $i++) {
                 $jours_de_revision = new JoursDeBoucle();
                 $jours_de_revision->setJours($i);
                 $jours_courant = $joursDebut;
@@ -697,14 +698,24 @@ class CalculateurBoucle extends AbstractController
         } else if ($quantité_hizb >= 56 && $quantité_hizb <= 60) {
             $boucle_de_revision->setDuree($boucle_de_revision_5);
 
-            //nombre entier par jour
-            $nbre_page_jour = (int)($total_page / ($boucle_de_revision_5 - 4));
-            $borne_courante = $page_debutBouclePrincipale;
-
-            //reste a repartir sur la semaine
-            $rest_nbre_page_jour = $total_page % ($boucle_de_revision_5 - 4);
-            $relicat_jour = $rest_nbre_page_jour;
-
+            //si jours de memo revient 5 fois
+            if ($joursDebut->format('N') == $joursDeMemorisation ||
+                (int)$joursDebut->format('N')+1 == (int)$joursDeMemorisation ||
+                $joursDebut->format('N') == "7" && $joursDeMemorisation == "1"){
+                //nombre entier par jour
+                $nbre_page_jour = (int)($total_page / ($boucle_de_revision_5 - 5));
+                $borne_courante = $page_debutBouclePrincipale;
+                //reste a repartir sur la semaine
+                $rest_nbre_page_jour = $total_page % ($boucle_de_revision_5 - 5);
+                $relicat_jour = $rest_nbre_page_jour;
+            } else {
+                //si jours de memo revient 4 fois
+                $nbre_page_jour = (int)($total_page / ($boucle_de_revision_5 - 4));
+                $borne_courante = $page_debutBouclePrincipale;
+                //reste a repartir sur la semaine
+                $rest_nbre_page_jour = $total_page % ($boucle_de_revision_5 - 4);
+                $relicat_jour = $rest_nbre_page_jour;
+            }
             // Regarder si sourateSupp null
             $borne_courante = $page_debutBouclePrincipale;
             // si null =>
@@ -723,7 +734,7 @@ class CalculateurBoucle extends AbstractController
             }
 
             //boucle pour decoupage des jours mettre dans tableau
-            for ($i = 0; $i < $boucle_de_revision_5 + 1; $i++) {
+            for ($i = 1; $i < $boucle_de_revision_5 + 1; $i++) {
                 $jours_de_revision = new JoursDeBoucle();
                 $jours_de_revision->setJours($i);
                 $jours_courant = $joursDebut;

@@ -5,240 +5,244 @@
 {% block body %}
     <div>{% include('include/nav.html.twig') %}</div>
     <div class="container">
-        <div class="row">
-            <div class="col-8 my-4">
-                <h6 class="row">Le révision planner c'est quoi ?</h6>
-                <p class=" text-justify">Le révision planner est un outil gratuit qui permet d'obtenir un plan de
-                    révision du Quran sur mesure selon ce que l'on a appris.<br>
-                    Il suffit de créer un compte ceci afin de pouvoir retrouver ses plans de révision à n'importe quel
-                    moment.<br>
-                    Apres avoir renseigné les informations demandées, vous obtenez in sha Allah un planning de revision ou
-                    chaque jours vous savez ce que vous avez à reviser à un rythme adapté à ce que vous avez appris</p>
-                <h6 class="row">Pourquoi ?</h6>
-                <p>Ayant moi meme eu des difficultés à organiser mes révisions et l'ayant beaucoup payé par l'oubli, j'ai
-                    toujours garder en tete que si je pouvais un jour developper un outil qui faciliterait cette tache je le
-                    ferais.<br>Plus de 5 ans aprés le germe de cette idée j'ai achevé ma formation de développeur web avec en tete
-                    de réaliser ce modeste outil qui aidera bi idhniLlah le plus nombre des apprenants du Quran dans cette noble tâche qu'est la révision du Quran.<br>
-                    Je suis conscient que certaines personnes n'ont pas besoin de ce genre d'outil mais je pense que cela peut aider à l'organisation des révisions et que cela peut apporter un confort non négligeable<br></p>
-            </div>
-            <img class="col-4" src="{{ asset('assets/img/exemple_planning.JPG') }}" alt="exemple">
+    <div class="row">
+        <div class="col-8 my-4">
+            <h6 class="row">Le révision planner c'est quoi ?</h6>
+            <p class=" text-justify">Le révision planner est un outil gratuit qui permet d'obtenir un plan de
+                révision du Quran sur mesure selon ce que l'on a appris.<br>
+                Il suffit de créer un compte ceci afin de pouvoir retrouver ses plans de révision à n'importe quel
+                moment.<br>
+                Apres avoir renseigné les informations demandées, vous obtenez in sha Allah un planning de revision ou
+                chaque jours vous savez ce que vous avez à reviser à un rythme adapté à ce que vous avez appris.</p>
+            <h6 class="row">Pourquoi ?</h6>
+            <p class=" text-justify">Ayant moi meme eu des difficultés à organiser mes révisions et l'ayant beaucoup
+                payé par l'oubli, j'ai
+                toujours garder en tete que si je pouvais un jour developper un outil qui faciliterait cette tache je le
+                ferais.<br>Plus de 5 ans aprés le germe de cette idée j'ai achevé ma formation de développeur web avec
+                en tete
+                de réaliser ce modeste outil qui aidera bi idhniLlah le plus nombre des apprenants du Quran dans cette
+                noble tâche qu'est la révision du Quran.<br>
+                Je suis conscient que certaines personnes n'ont pas besoin de ce genre d'outil mais je pense que cela
+                peut aider à l'organisation des révisions et que cela peut apporter un confort non négligeable.<br></p>
         </div>
-        {% if app.user %}
-            <h3 class="bg-success rounded text-black py-2 my-1 text-center">Afin d'obtenir un planning de révision,
-                remplissez les champs suivants</h3>
+        <img class="col-4 p-2" src="{{ asset('assets/img/preview_revision.jpg') }}" alt="exemple">
+    </div>
+    {% if app.user %}
+        <h3 class="bg-success rounded text-black py-2 my-1 text-center">Afin d'obtenir un planning de révision,
+            remplissez les champs suivants</h3>
 
-            {{ form_start(EtatDesLieuxForm) }}
+        {{ form_start(EtatDesLieuxForm) }}
 
-            <h6 class="row my-3">Etape 1 - Renseigner la portion de sourates qui se suivent que vous avez memorisé ( exemple
-                sourate debut : al Fatiha et sourate fin : Al Baqara )</h6>
-            <div class="row my-3 ">
-                <div class="col-xl-2 py-2 col-md-6">
-                    {{ form_label(EtatDesLieuxForm.sourate_debut) }}
-                </div>
-                <div class="col-xl-2 col-md-6">
-                    {{ form_widget(EtatDesLieuxForm.sourate_debut) }}
-                </div>
-                <div class="col-xl-2 py-2 col-md-6">
-                    {{ form_label(EtatDesLieuxForm.sourate_debut_verset_debut) }}
-                </div>
-                <div class="col-xl-2 col-md-6">
-                    {{ form_widget(EtatDesLieuxForm.sourate_debut_verset_debut) }}
-                </div>
-                <div class="col-xl-2 py-2 col-md-6">
-                    {{ form_label(EtatDesLieuxForm.sourate_debut_verset_fin) }}
-                </div>
-                <div class="col-xl-2 col-md-6">
-                    {{ form_widget(EtatDesLieuxForm.sourate_debut_verset_fin) }}
-                </div>
+        <h6 class="row my-3">Etape 1 - Renseigner la portion de sourates qui se suivent que vous avez memorisé ( exemple
+            sourate début : al Fatiha et sourate fin : Al Baqara )</h6>
+        <div class="row my-3 ">
+            <div class="col-xl-2 py-2 col-md-6">
+                {{ form_label(EtatDesLieuxForm.sourate_debut) }}
             </div>
-            <div class="row my-3">
-                <div class="col-xl-2 py-2 col-md-6">
-                    {{ form_label(EtatDesLieuxForm.sourate_fin) }}
-                </div>
-                <div class="col-xl-2 col-md-6">
-                    {{ form_widget(EtatDesLieuxForm.sourate_fin) }}
-                </div>
-                <div class="col-xl-2 py-2 col-md-6">
-                    {{ form_label(EtatDesLieuxForm.sourate_fin_verset_debut) }}
-                </div>
-                <div class="col-xl-2 col-md-6">
-                    {{ form_widget(EtatDesLieuxForm.sourate_fin_verset_debut) }}
-                </div>
-                <div class="col-xl-2 py-2 col-md-6">
-                    {{ form_label(EtatDesLieuxForm.sourate_fin_verset_fin) }}
-                </div>
-                <div class="col-xl-2 col-md-6">
-                    {{ form_widget(EtatDesLieuxForm.sourate_fin_verset_fin) }}
-                </div>
+            <div class="col-xl-2 col-md-6">
+                {{ form_widget(EtatDesLieuxForm.sourate_debut) }}
             </div>
-
-            <h6 class="row my-3">Etape 2 - Renseigner les sourates supplémentaires isolées que vous avez memorisé ( ex :
-                sourate al Kahf )</h6>
-            <div class="row my-3">
-                <div class="col-xl py-2 col-md-6">
-                    <label class="" for="etat_des_lieux_sourate_supp">Sourate(s) supplémentaire(s) : </label>
-                </div>
-                <div class="col-xl-2 py-2 col-md-6">
-                    <select id="etat_des_lieux_sourate_supp" class="form-control">
-                        <option value="1">Al-Fatiha</option>
-                        <option value="2">Al-Baqara</option>
-                        <option value="3">Aal-e-Imran</option>
-                        <option value="4">An-Nisa</option>
-                        <option value="5">Al-Maeda</option>
-                        <option value="6">Al-Anaam</option>
-                        <option value="7">Al-Araf</option>
-                        <option value="8">Al-Anfal</option>
-                        <option value="9">At-Taubah</option>
-                        <option value="10">Yunus</option>
-                        <option value="11">Hud</option>
-                        <option value="12">Yusuf</option>
-                        <option value="13">Ar-Rad</option>
-                        <option value="14">Ibrahim</option>
-                        <option value="15">Al-Hijr</option>
-                        <option value="16">An-Nahl</option>
-                        <option value="17">Al-Isra</option>
-                        <option value="18">Al-Kahf</option>
-                        <option value="19">Maryam</option>
-                        <option value="20">Taha</option>
-                        <option value="21">Al-Anbiya</option>
-                        <option value="22">Al-Hajj</option>
-                        <option value="23">Al-Mumenoon</option>
-                        <option value="24">An-Noor</option>
-                        <option value="25">Al-Furqan</option>
-                        <option value="26">Ash-Shuara</option>
-                        <option value="27">An-Naml</option>
-                        <option value="28">Al-Qasas</option>
-                        <option value="29">Al-Ankaboot</option>
-                        <option value="30">Ar-Room</option>
-                        <option value="31">Luqman</option>
-                        <option value="32">As-Sajda</option>
-                        <option value="33">Al-Ahzab</option>
-                        <option value="34">Saba</option>
-                        <option value="35">Fatir</option>
-                        <option value="36">Ya Seen</option>
-                        <option value="37">As-Saaffat</option>
-                        <option value="38">Sad</option>
-                        <option value="39">Az-Zumar</option>
-                        <option value="40">Ghafir</option>
-                        <option value="41">Fussilat</option>
-                        <option value="42">Ash-Shura</option>
-                        <option value="43">Az-Zukhruf</option>
-                        <option value="44">Ad-Dukhan</option>
-                        <option value="45">Al-Jathiya</option>
-                        <option value="46">Al-Ahqaf</option>
-                        <option value="47">Muhammad</option>
-                        <option value="48">Al-Fath</option>
-                        <option value="49">Al-Hujraat</option>
-                        <option value="50">Qaf</option>
-                        <option value="51">Adh-Dhariyat</option>
-                        <option value="52">At-tur</option>
-                        <option value="53">An-Najm</option>
-                        <option value="54">Al-Qamar</option>
-                        <option value="55">Al-Rahman</option>
-                        <option value="56">Al-Waqia</option>
-                        <option value="57">Al-Hadid</option>
-                        <option value="58">Al-Mujadila</option>
-                        <option value="59">Al-Hashr</option>
-                        <option value="60">Al-Mumtahina</option>
-                        <option value="61">As-Saff</option>
-                        <option value="62">Al-Jumua</option>
-                        <option value="63">Al-Munafiqoon</option>
-                        <option value="64">At-Taghabun</option>
-                        <option value="65">At-Talaq</option>
-                        <option value="66">At-Tahrim</option>
-                        <option value="67">Al-Mulk</option>
-                        <option value="68">Al-Qalam</option>
-                        <option value="69">Al-Haaqqa</option>
-                        <option value="70">Al-Maarij</option>
-                        <option value="71">Nooh</option>
-                        <option value="72">Al-Jinn</option>
-                        <option value="73">Al-Muzzammil</option>
-                        <option value="74">Al-Muddathir</option>
-                        <option value="75">Al-Qiyama</option>
-                        <option value="76">Al-Insan</option>
-                        <option value="77">Al-Mursalat</option>
-                        <option value="78">An-Naba</option>
-                        <option value="79">An-Naziat</option>
-                        <option value="80">Abasa</option>
-                        <option value="81">At-Takwir</option>
-                        <option value="82">AL-Infitar</option>
-                        <option value="83">Al-Mutaffifin</option>
-                        <option value="84">Al-Inshiqaq</option>
-                        <option value="85">Al-Burooj</option>
-                        <option value="86">At-Tariq</option>
-                        <option value="87">Al-Ala</option>
-                        <option value="88">Al-Ghashiya</option>
-                        <option value="89">Al-Fajr</option>
-                        <option value="90">Al-Balad</option>
-                        <option value="91">Ash-Shams</option>
-                        <option value="92">Al-Lail</option>
-                        <option value="93">Ad-Dhuha</option>
-                        <option value="94">Al-Inshirah</option>
-                        <option value="95">At-Tin</option>
-                        <option value="96">Al-Alaq</option>
-                        <option value="97">Al-Qadr</option>
-                        <option value="98">Al-Bayyina</option>
-                        <option value="99">Al-Zalzala</option>
-                        <option value="100">Al-Adiyat</option>
-                        <option value="101">Al-Qaria</option>
-                        <option value="102">At-Takathur</option>
-                        <option value="103">Al-Asr</option>
-                        <option value="104">Al-Humaza</option>
-                        <option value="105">Al-fil</option>
-                        <option value="106">Quraish</option>
-                        <option value="107">Al-Maun</option>
-                        <option value="108">Al-Kauther</option>
-                        <option value="109">Al-Kafiroon</option>
-                        <option value="110">An-Nasr</option>
-                        <option value="111">Al-Masadd</option>
-                        <option value="112">Al-Ikhlas</option>
-                        <option value="113">Al-Falaq</option>
-                        <option value="114">An-Nas</option>
-                    </select>
-                </div>
-                <div class="col-xl py-2">
-                    <a onclick="functionAdd()" class="btn btn-success ">Ajouter </a>
-                    <a onclick="functionRaz()" class="btn btn-success ">Remise à zéro</a>
-                </div>
-                <div class="col-xl-4 py-2">
-                    {{ form_widget(EtatDesLieuxForm.sourateSupp) }}
-                </div>
+            <div class="col-xl-2 py-2 col-md-6">
+                {{ form_label(EtatDesLieuxForm.sourate_debut_verset_debut) }}
             </div>
-
-            <h6 class="row my-3">Etape 3 - Renseigner le jour de début et votre jour habituel de révision ( exemple : le
-                lendemain et jour de révision : samedi )</h6>
-            <div class="row my-3">
-                <div class="col-xl-3 py-2 col-md-6">
-                    {{ form_label(EtatDesLieuxForm.JoursDeDebut) }}
-                </div>
-                <div class="col-xl-3 col-md-6">
-                    {{ form_widget(EtatDesLieuxForm.JoursDeDebut) }}
-                </div>
-                <div class="col-xl-3 py-2 col-md-6">
-                    {{ form_label(EtatDesLieuxForm.joursDeMemo) }}
-                </div>
-                <div class="col-xl-3 col-md-6">
-                    {{ form_widget(EtatDesLieuxForm.joursDeMemo) }}
-                </div>
+            <div class="col-xl-2 col-md-6">
+                {{ form_widget(EtatDesLieuxForm.sourate_debut_verset_debut) }}
             </div>
-            <h6 class="row my-3">Etape 4 - Email journalier de revision ?</h6>
-            <div class="row my-3">
-                <div class="col-xl-6 py-2 col-md-6">
-                    {{ form_label(EtatDesLieuxForm.envoieMail) }}
-                </div>
-                <div class="col-xl-6 col-md-6">
-                    {{ form_widget(EtatDesLieuxForm.envoieMail) }}
-                </div>
+            <div class="col-xl-2 py-2 col-md-6">
+                {{ form_label(EtatDesLieuxForm.sourate_debut_verset_fin) }}
             </div>
-            {{ form_end(EtatDesLieuxForm) }}
+            <div class="col-xl-2 col-md-6">
+                {{ form_widget(EtatDesLieuxForm.sourate_debut_verset_fin) }}
             </div>
-        {% else %}
+        </div>
+        <div class="row my-3">
+            <div class="col-xl-2 py-2 col-md-6">
+                {{ form_label(EtatDesLieuxForm.sourate_fin) }}
+            </div>
+            <div class="col-xl-2 col-md-6">
+                {{ form_widget(EtatDesLieuxForm.sourate_fin) }}
+            </div>
+            <div class="col-xl-2 py-2 col-md-6">
+                {{ form_label(EtatDesLieuxForm.sourate_fin_verset_debut) }}
+            </div>
+            <div class="col-xl-2 col-md-6">
+                {{ form_widget(EtatDesLieuxForm.sourate_fin_verset_debut) }}
+            </div>
+            <div class="col-xl-2 py-2 col-md-6">
+                {{ form_label(EtatDesLieuxForm.sourate_fin_verset_fin) }}
+            </div>
+            <div class="col-xl-2 col-md-6">
+                {{ form_widget(EtatDesLieuxForm.sourate_fin_verset_fin) }}
+            </div>
+        </div>
 
-                <a class="btn btn-success my-1" href="{{ path('app_login') }}" title="Login">Se connecter</a>
+        <h6 class="row my-3">Etape 2 - Renseigner les sourates supplémentaires isolées que vous avez memorisé ( ex :
+            sourate al Kahf )</h6>
+        <div class="row my-3">
+            <div class="col-xl py-2 col-md-6">
+                <label class="" for="etat_des_lieux_sourate_supp">Sourate(s) supplémentaire(s) : </label>
+            </div>
+            <div class="col-xl-2 py-2 col-md-6">
+                <select id="etat_des_lieux_sourate_supp" class="form-control">
+                    <option value="1">Al-Fatiha</option>
+                    <option value="2">Al-Baqara</option>
+                    <option value="3">Aal-e-Imran</option>
+                    <option value="4">An-Nisa</option>
+                    <option value="5">Al-Maeda</option>
+                    <option value="6">Al-Anaam</option>
+                    <option value="7">Al-Araf</option>
+                    <option value="8">Al-Anfal</option>
+                    <option value="9">At-Taubah</option>
+                    <option value="10">Yunus</option>
+                    <option value="11">Hud</option>
+                    <option value="12">Yusuf</option>
+                    <option value="13">Ar-Rad</option>
+                    <option value="14">Ibrahim</option>
+                    <option value="15">Al-Hijr</option>
+                    <option value="16">An-Nahl</option>
+                    <option value="17">Al-Isra</option>
+                    <option value="18">Al-Kahf</option>
+                    <option value="19">Maryam</option>
+                    <option value="20">Taha</option>
+                    <option value="21">Al-Anbiya</option>
+                    <option value="22">Al-Hajj</option>
+                    <option value="23">Al-Mumenoon</option>
+                    <option value="24">An-Noor</option>
+                    <option value="25">Al-Furqan</option>
+                    <option value="26">Ash-Shuara</option>
+                    <option value="27">An-Naml</option>
+                    <option value="28">Al-Qasas</option>
+                    <option value="29">Al-Ankaboot</option>
+                    <option value="30">Ar-Room</option>
+                    <option value="31">Luqman</option>
+                    <option value="32">As-Sajda</option>
+                    <option value="33">Al-Ahzab</option>
+                    <option value="34">Saba</option>
+                    <option value="35">Fatir</option>
+                    <option value="36">Ya Seen</option>
+                    <option value="37">As-Saaffat</option>
+                    <option value="38">Sad</option>
+                    <option value="39">Az-Zumar</option>
+                    <option value="40">Ghafir</option>
+                    <option value="41">Fussilat</option>
+                    <option value="42">Ash-Shura</option>
+                    <option value="43">Az-Zukhruf</option>
+                    <option value="44">Ad-Dukhan</option>
+                    <option value="45">Al-Jathiya</option>
+                    <option value="46">Al-Ahqaf</option>
+                    <option value="47">Muhammad</option>
+                    <option value="48">Al-Fath</option>
+                    <option value="49">Al-Hujraat</option>
+                    <option value="50">Qaf</option>
+                    <option value="51">Adh-Dhariyat</option>
+                    <option value="52">At-tur</option>
+                    <option value="53">An-Najm</option>
+                    <option value="54">Al-Qamar</option>
+                    <option value="55">Al-Rahman</option>
+                    <option value="56">Al-Waqia</option>
+                    <option value="57">Al-Hadid</option>
+                    <option value="58">Al-Mujadila</option>
+                    <option value="59">Al-Hashr</option>
+                    <option value="60">Al-Mumtahina</option>
+                    <option value="61">As-Saff</option>
+                    <option value="62">Al-Jumua</option>
+                    <option value="63">Al-Munafiqoon</option>
+                    <option value="64">At-Taghabun</option>
+                    <option value="65">At-Talaq</option>
+                    <option value="66">At-Tahrim</option>
+                    <option value="67">Al-Mulk</option>
+                    <option value="68">Al-Qalam</option>
+                    <option value="69">Al-Haaqqa</option>
+                    <option value="70">Al-Maarij</option>
+                    <option value="71">Nooh</option>
+                    <option value="72">Al-Jinn</option>
+                    <option value="73">Al-Muzzammil</option>
+                    <option value="74">Al-Muddathir</option>
+                    <option value="75">Al-Qiyama</option>
+                    <option value="76">Al-Insan</option>
+                    <option value="77">Al-Mursalat</option>
+                    <option value="78">An-Naba</option>
+                    <option value="79">An-Naziat</option>
+                    <option value="80">Abasa</option>
+                    <option value="81">At-Takwir</option>
+                    <option value="82">AL-Infitar</option>
+                    <option value="83">Al-Mutaffifin</option>
+                    <option value="84">Al-Inshiqaq</option>
+                    <option value="85">Al-Burooj</option>
+                    <option value="86">At-Tariq</option>
+                    <option value="87">Al-Ala</option>
+                    <option value="88">Al-Ghashiya</option>
+                    <option value="89">Al-Fajr</option>
+                    <option value="90">Al-Balad</option>
+                    <option value="91">Ash-Shams</option>
+                    <option value="92">Al-Lail</option>
+                    <option value="93">Ad-Dhuha</option>
+                    <option value="94">Al-Inshirah</option>
+                    <option value="95">At-Tin</option>
+                    <option value="96">Al-Alaq</option>
+                    <option value="97">Al-Qadr</option>
+                    <option value="98">Al-Bayyina</option>
+                    <option value="99">Al-Zalzala</option>
+                    <option value="100">Al-Adiyat</option>
+                    <option value="101">Al-Qaria</option>
+                    <option value="102">At-Takathur</option>
+                    <option value="103">Al-Asr</option>
+                    <option value="104">Al-Humaza</option>
+                    <option value="105">Al-fil</option>
+                    <option value="106">Quraish</option>
+                    <option value="107">Al-Maun</option>
+                    <option value="108">Al-Kauther</option>
+                    <option value="109">Al-Kafiroon</option>
+                    <option value="110">An-Nasr</option>
+                    <option value="111">Al-Masadd</option>
+                    <option value="112">Al-Ikhlas</option>
+                    <option value="113">Al-Falaq</option>
+                    <option value="114">An-Nas</option>
+                </select>
+            </div>
+            <div class="col-xl py-2">
+                <a onclick="functionAdd()" class="btn btn-success ">Ajouter </a>
+                <a onclick="functionRaz()" class="btn btn-success ">Remise à zéro</a>
+            </div>
+            <div class="col-xl-4 py-2">
+                {{ form_widget(EtatDesLieuxForm.sourateSupp) }}
+            </div>
+        </div>
+
+        <h6 class="row my-3">Etape 3 - Renseigner le jour de début et votre jour habituel de révision ( exemple : le
+            lendemain et jour de révision : samedi )</h6>
+        <div class="row my-3">
+            <div class="col-xl-3 py-2 col-md-6">
+                {{ form_label(EtatDesLieuxForm.JoursDeDebut) }}
+            </div>
+            <div class="col-xl-3 col-md-6">
+                {{ form_widget(EtatDesLieuxForm.JoursDeDebut) }}
+            </div>
+            <div class="col-xl-3 py-2 col-md-6">
+                {{ form_label(EtatDesLieuxForm.joursDeMemo) }}
+            </div>
+            <div class="col-xl-3 col-md-6">
+                {{ form_widget(EtatDesLieuxForm.joursDeMemo) }}
+            </div>
+        </div>
+        <h6 class="row my-3">Etape 4 - Email journalier de revision ?</h6>
+        <div class="row my-3">
+            <div class="col-xl-6 py-2 col-md-6">
+                {{ form_label(EtatDesLieuxForm.envoieMail) }}
+            </div>
+            <div class="col-xl-6 col-md-6">
+                {{ form_widget(EtatDesLieuxForm.envoieMail) }}
+            </div>
+        </div>
+        {{ form_end(EtatDesLieuxForm) }}
+        </div>
+    {% else %}
+
+        <a class="btn btn-success my-1" href="{{ path('app_login') }}" title="Login">Se connecter</a>
 
 
-                <a class="btn btn-success" href="{{ path('app_register') }}" title="création de compte">Créer un compte</a>
-        {% endif %}
+        <a class="btn btn-success" href="{{ path('app_register') }}" title="création de compte">Créer un compte</a>
+    {% endif %}
 
 
 

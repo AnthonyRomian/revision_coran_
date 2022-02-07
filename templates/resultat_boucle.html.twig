@@ -24,9 +24,21 @@
                 <tr>
                     <td>N° {{ j.jours }}</td>
                     <td>{{ j.Date|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }} </td>
-                    <td>page {{ j.PageDebut }} ( {{ j.sourateDebutBoucleJournaliere }} )</td>
-                    <td>jusqu'à</td>
-                    <td>page {{ j.PageFin }} ( {{ j.sourateFinBoucleJournaliere }} )</td>
+                    {% if  j.PageDebut == "memorisation" %}
+                        <td>Jour d'ancrage / {{ j.PageDebut }} </td>
+                    {% else %}
+                        <td>page {{ j.PageDebut }} ( {{ j.sourateDebutBoucleJournaliere }} )</td>
+                    {% endif %}
+                    {% if  j.PageDebut == "memorisation" %}
+                        <td></td>
+                    {% else %}
+                        <td>jusqu'à</td>
+                    {% endif %}
+                    {% if  j.PageDebut == "memorisation" %}
+                        <td>Jour d'ancrage / {{ j.PageFin }} </td>
+                    {% else %}
+                        <td>page {{ j.PageFin }} ( {{ j.sourateFinBoucleJournaliere }} )</td>
+                    {% endif %}
                 </tr>
                 </tbody>
             {% endfor %}

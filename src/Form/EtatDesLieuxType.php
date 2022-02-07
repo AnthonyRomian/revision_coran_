@@ -69,9 +69,9 @@ class EtatDesLieuxType extends AbstractType
             ])
             ->add('sourateSupp', TextType::class,[
                 'required' => false,
-                'disabled' => true,
                 'label_attr' => [
-                    'class' => 'label'
+                    'class' => 'label',
+                    'hidden' => 'true'
                 ],
 
                 'label' => 'Sourate Supplémentaire : ',

@@ -99,6 +99,7 @@ class BoucleDeRevisionController extends AbstractController
         //police par defaut
         $pdfOptions->set('defaultFont', 'Arial');
         $pdfOptions->setIsRemoteEnabled(true);
+
          //instancie dompdf
         $dompdf = new Dompdf($pdfOptions);
 
@@ -110,6 +111,7 @@ class BoucleDeRevisionController extends AbstractController
             ]
         ]);
         $dompdf->setHttpContext($context);
+
 
         // genere html
         $html = $this->renderView('download.html.twig', [
