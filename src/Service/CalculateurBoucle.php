@@ -22,7 +22,7 @@ class CalculateurBoucle extends AbstractController
         $this->apirequest = $apirequest;
     }
 
-    public function CalculerBoucle(EtatDesLieux $etatDesLieux, EntityManagerInterface $entityManager, CallApiService $apiService): BoucleDeRevision
+    public function CalculerBoucle(EtatDesLieux $etatDesLieux, EntityManagerInterface $entityManager): BoucleDeRevision
     {
         $boucle_de_revision_1 = 7;
         $boucle_de_revision_2 = 14;
@@ -32,10 +32,10 @@ class CalculateurBoucle extends AbstractController
 
         $boucle_de_revision = new BoucleDeRevision();
 
+
+
         $nom = $this->getUser()->getNom();
-
         date_default_timezone_set('Europe/Paris');
-
         setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
 
         $boucle_de_revision->setEtatDesLieux($etatDesLieux);
@@ -77,16 +77,13 @@ class CalculateurBoucle extends AbstractController
             $tableauSourateAvant = [];
             $tableauSourateApres = [];
 
-
-
             for ($y = 0; $y < sizeof($tableauSourateSupp); $y++) {
                 $sourateSupp = $Souraterepo->findOneBy(['latin' => $tableauSourateSupp[$y]]);
-                $page_debutSourateSupp = $apiService->getSurahData($sourateSupp->getId())['data']['ayahs'][array_key_first($apiService->getSurahData($sourateSupp->getId())['data']['ayahs'])]['page'];
-                $page_finSourateSupp = $apiService->getSurahData($sourateSupp->getId())['data']['ayahs'][array_key_last($apiService->getSurahData($sourateSupp->getId())['data']['ayahs'])]['page'];
+                $page_debutSourateSupp = $this->apirequest->getSurahData($sourateSupp->getId())['data']['ayahs'][array_key_first($this->apirequest->getSurahData($sourateSupp->getId())['data']['ayahs'])]['page'];
+                $page_finSourateSupp = $this->apirequest->getSurahData($sourateSupp->getId())['data']['ayahs'][array_key_last($this->apirequest->getSurahData($sourateSupp->getId())['data']['ayahs'])]['page'];
 
                 //nombre de page sourate supp
                 $nombre_pageSourateSupp += ($page_finSourateSupp + 1) - $page_debutSourateSupp;
-
 
                 if ($sourateSupp->getId() < $sourate_debut_search->getId() ){
                     $tableauSourateAvant[] = $sourateSupp->getId() ;
@@ -99,10 +96,10 @@ class CalculateurBoucle extends AbstractController
             }
             if ($tableauSourateAvant !== [null]) {
                 for ($x = 0; $x < sizeof($tableauSourateAvant); $x++) {
-                    $souratesAvantDebutPage = $apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'][array_key_first($apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'])]['page'];
-                    $sourateAvantFinPage = $apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'][array_key_last($apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'])]['page'];
-                    $quartHizbdebut = $apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'][array_key_first($apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'])]['hizbQuarter'];
-                    $quartHizbfin = $apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'][array_key_last($apiService->getSurahData($tableauSourateAvant[$x])['data']['ayahs'])]['hizbQuarter'];
+                    $souratesAvantDebutPage = $this->apirequest->getSurahData($tableauSourateAvant[$x])['data']['ayahs'][array_key_first($this->apirequest->getSurahData($tableauSourateAvant[$x])['data']['ayahs'])]['page'];
+                    $sourateAvantFinPage = $this->apirequest->getSurahData($tableauSourateAvant[$x])['data']['ayahs'][array_key_last($this->apirequest->getSurahData($tableauSourateAvant[$x])['data']['ayahs'])]['page'];
+                    $quartHizbdebut = $this->apirequest->getSurahData($tableauSourateAvant[$x])['data']['ayahs'][array_key_first($this->apirequest->getSurahData($tableauSourateAvant[$x])['data']['ayahs'])]['hizbQuarter'];
+                    $quartHizbfin = $this->apirequest->getSurahData($tableauSourateAvant[$x])['data']['ayahs'][array_key_last($this->apirequest->getSurahData($tableauSourateAvant[$x])['data']['ayahs'])]['hizbQuarter'];
                     $hizbSourateAvant += ($quartHizbfin-$quartHizbdebut)/4;
 
                     $range = ["num_sourate" => $tableauSourateAvant[$x],
@@ -114,10 +111,10 @@ class CalculateurBoucle extends AbstractController
             }
             if ($tableauSourateApres !== [null]) {
                 for ($x = 0; $x < sizeof($tableauSourateApres); $x++) {
-                    $sourateApresDebutPage = $apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'][array_key_first($apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'])]['page'];
-                    $sourateApresFinPage = $apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'][array_key_last($apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'])]['page'];
-                    $quartHizbdebut = $apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'][array_key_first($apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'])]['hizbQuarter'];
-                    $quartHizbfin = $apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'][array_key_last($apiService->getSurahData($tableauSourateApres[$x])['data']['ayahs'])]['hizbQuarter'];
+                    $sourateApresDebutPage = $this->apirequest->getSurahData($tableauSourateApres[$x])['data']['ayahs'][array_key_first($this->apirequest->getSurahData($tableauSourateApres[$x])['data']['ayahs'])]['page'];
+                    $sourateApresFinPage = $this->apirequest->getSurahData($tableauSourateApres[$x])['data']['ayahs'][array_key_last($this->apirequest->getSurahData($tableauSourateApres[$x])['data']['ayahs'])]['page'];
+                    $quartHizbdebut = $this->apirequest->getSurahData($tableauSourateApres[$x])['data']['ayahs'][array_key_first($this->apirequest->getSurahData($tableauSourateApres[$x])['data']['ayahs'])]['hizbQuarter'];
+                    $quartHizbfin = $this->apirequest->getSurahData($tableauSourateApres[$x])['data']['ayahs'][array_key_last($this->apirequest->getSurahData($tableauSourateApres[$x])['data']['ayahs'])]['hizbQuarter'];
                     $hizbSourateApres += ($quartHizbfin-$quartHizbdebut)/4;
 
                     $range = ["num_sourate" => $tableauSourateApres[$x],
@@ -132,8 +129,8 @@ class CalculateurBoucle extends AbstractController
         //-------------- Sourate supp -----------------------//
 
         //calcul du nombre de pages
-        $page_debutBouclePrincipale = $apiService->getSurahData($sourate_debut_search->getId())['data']['ayahs'][$sourate_debut_verset_debut - 1]['page'];
-        $page_finBouclePrincipale = $apiService->getSurahData($sourate_fin_search->getId())['data']['ayahs'][$sourate_fin_verset_fin - 1]['page'];
+        $page_debutBouclePrincipale = $this->apirequest->getSurahData($sourate_debut_search->getId())['data']['ayahs'][$sourate_debut_verset_debut - 1]['page'];
+        $page_finBouclePrincipale = $this->apirequest->getSurahData($sourate_fin_search->getId())['data']['ayahs'][$sourate_fin_verset_fin - 1]['page'];
         $total_page = ($page_finBouclePrincipale + 1) - $page_debutBouclePrincipale;
         $total_page += $nombre_pageSourateSupp;
 
@@ -235,7 +232,7 @@ class CalculateurBoucle extends AbstractController
                         if ($j === 0) {
                             dump('borne courante  : ' . $borne_courante);
                             $jours_de_revision->setPageDebut($borne_courante);
-                            $borne_api_debut = $apiService->getPageData($borne_courante)['data']['surahs'];
+                            $borne_api_debut = $this->apirequest->getPageData($borne_courante)['data']['surahs'];
                             $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
                             $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
                             $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
@@ -263,7 +260,7 @@ class CalculateurBoucle extends AbstractController
                         }
                         if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
                             $jours_de_revision->setPageFin($borne_courante);
-                            $borne_api_fin = $apiService->getPageData($borne_courante)['data']['surahs'];
+                            $borne_api_fin = $this->apirequest->getPageData($borne_courante)['data']['surahs'];
                             $num_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['number'];
                             $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
                             $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
@@ -366,7 +363,7 @@ class CalculateurBoucle extends AbstractController
                         if ($j === 0) {
                             dump('borne courante  : ' . $borne_courante);
                             $jours_de_revision->setPageDebut($borne_courante);
-                            $borne_api_debut = $apiService->getPageData($borne_courante)['data']['surahs'];
+                            $borne_api_debut = $this->apirequest->getPageData($borne_courante)['data']['surahs'];
                             $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
                             $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
                             $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
@@ -394,7 +391,7 @@ class CalculateurBoucle extends AbstractController
                         }
                         if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
                             $jours_de_revision->setPageFin($borne_courante);
-                            $borne_api_fin = $apiService->getPageData($borne_courante)['data']['surahs'];
+                            $borne_api_fin = $this->apirequest->getPageData($borne_courante)['data']['surahs'];
                             $num_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['number'];
                             $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
                             $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
@@ -500,7 +497,7 @@ class CalculateurBoucle extends AbstractController
                         if ($j === 0) {
                             dump('borne courante  : ' . $borne_courante);
                             $jours_de_revision->setPageDebut($borne_courante);
-                            $borne_api_debut = $apiService->getPageData($borne_courante)['data']['surahs'];
+                            $borne_api_debut = $this->apirequest->getPageData($borne_courante)['data']['surahs'];
                             $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
                             $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
                             $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
@@ -528,7 +525,7 @@ class CalculateurBoucle extends AbstractController
                         }
                         if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
                             $jours_de_revision->setPageFin($borne_courante);
-                            $borne_api_fin = $apiService->getPageData($borne_courante)['data']['surahs'];
+                            $borne_api_fin = $this->apirequest->getPageData($borne_courante)['data']['surahs'];
                             $num_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['number'];
                             $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
                             $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
@@ -633,7 +630,7 @@ class CalculateurBoucle extends AbstractController
                         if ($j === 0) {
                             dump('borne courante  : ' . $borne_courante);
                             $jours_de_revision->setPageDebut($borne_courante);
-                            $borne_api_debut = $apiService->getPageData($borne_courante)['data']['surahs'];
+                            $borne_api_debut = $this->apirequest->getPageData($borne_courante)['data']['surahs'];
                             $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
                             $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
                             $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
@@ -661,7 +658,7 @@ class CalculateurBoucle extends AbstractController
                         }
                         if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
                             $jours_de_revision->setPageFin($borne_courante);
-                            $borne_api_fin = $apiService->getPageData($borne_courante)['data']['surahs'];
+                            $borne_api_fin = $this->apirequest->getPageData($borne_courante)['data']['surahs'];
                             $num_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['number'];
                             $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
                             $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
@@ -774,7 +771,7 @@ class CalculateurBoucle extends AbstractController
                         if ($j === 0) {
                             dump('borne courante  : ' . $borne_courante);
                             $jours_de_revision->setPageDebut($borne_courante);
-                            $borne_api_debut = $apiService->getPageData($borne_courante)['data']['surahs'];
+                            $borne_api_debut = $this->apirequest->getPageData($borne_courante)['data']['surahs'];
                             $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
                             $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
                             $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
@@ -802,7 +799,7 @@ class CalculateurBoucle extends AbstractController
                         }
                         if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
                             $jours_de_revision->setPageFin($borne_courante);
-                            $borne_api_fin = $apiService->getPageData($borne_courante)['data']['surahs'];
+                            $borne_api_fin = $this->apirequest->getPageData($borne_courante)['data']['surahs'];
                             $num_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['number'];
                             $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
                             $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;

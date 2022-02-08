@@ -29,18 +29,18 @@ class EtatDesLieuxType extends AbstractType
                 'mapped' => true,
                 'class' => Sourate::class,
                 'choice_label' => 'latin',
-                'placeholder' => 'Sourate début',
+                'placeholder' => 'Ex : 1 - Al Fatiha',
                 'label' => 'Sourate début : ',
                 'required' => false
             ])
             ->add('sourate_debut_verset_debut', ChoiceType::class, [
-                'placeholder' => 'Choisir verset',
+                'placeholder' => 'Ex : 1',
                 'required' => false,
                 'mapped' => true,
                 'label' => 'Verset début : '
             ])
             ->add('sourate_debut_verset_fin', ChoiceType::class, [
-                'placeholder' => 'Choisir verset',
+                'placeholder' => 'Ex : 7',
                 'required' => false,
                 'label' => 'Verset fin : '
 
@@ -49,20 +49,20 @@ class EtatDesLieuxType extends AbstractType
                 'mapped' => true,
                 'class' => Sourate::class,
                 'choice_label' => 'latin',
-                'placeholder' => 'Sourate fin',
+                'placeholder' => 'Ex : 2 - Al Baqara',
                 'label' => 'Sourate fin : ',
                 'required' => false
 
             ])
             ->add('sourate_fin_verset_debut', ChoiceType::class, [
-                'placeholder' => 'Choisir verset',
+                'placeholder' => 'Ex : 1',
                 'required' => false,
                 'label' => 'Verset début : '
 
 
             ])
             ->add('sourate_fin_verset_fin', ChoiceType::class, [
-                'placeholder' => 'Choisir verset',
+                'placeholder' => 'Ex : 102',
                 'required' => false,
                 'label' => 'Verset fin : '
 
@@ -119,12 +119,12 @@ class EtatDesLieuxType extends AbstractType
                 'multiple' => false,
                 'expanded' => true,
                 'data' => true
-            ])
-            ->add('Valider', SubmitType::class, [
-                'attr' => [
-                   'class' => 'btn-success mr-3'],
-                'label' => 'Générer le planning de révision'
             ]);
+            /*->add('Valider', SubmitType::class, [
+                'attr' => [
+                   'class' => 'btn-success mr-3 '],
+                'label' => 'Générer le planning de révision'
+            ]);*/
 
         $builder->get('sourateSupp')
             ->addModelTransformer(new CallbackTransformer(

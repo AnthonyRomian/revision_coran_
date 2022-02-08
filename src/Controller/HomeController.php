@@ -20,8 +20,7 @@ class HomeController extends AbstractController
     public function home(
         Request $request,
         EntityManagerInterface $entityManager,
-        CalculateurBoucle $calculateurBoucle,
-        CallApiService $apiService
+        CalculateurBoucle $calculateurBoucle
     ): Response
     {
         date_default_timezone_set('Europe/Paris');
@@ -43,7 +42,7 @@ class HomeController extends AbstractController
         if($etatDesLieuxForm->isSubmitted() && $etatDesLieuxForm->isValid())
         {
 
-            $calculateurBoucle->CalculerBoucle($etatDesLieux, $entityManager, $apiService);
+            $calculateurBoucle->CalculerBoucle($etatDesLieux, $entityManager);
             $entityManager->persist($etatDesLieux);
             $entityManager->flush();
 

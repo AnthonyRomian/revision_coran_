@@ -14,25 +14,34 @@
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{ path('home') }}" title="Accueil">Accueil</a>
+                    <a class="nav-link active" aria-current="page" href="{{ path('home') }}" title="Accueil">Accueil<i class="fas fa-house-user ml-2"></i>
+
+                    </a>
                 </li>
                 {% if app.user %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('profil', {'id': app.user.id}) }}" title="Mon profil">Mon
-                            profil</a>
+                        <a class="nav-link" href="{{ path('profil', {'id': app.user.id}) }}" title="Mon profil">Profil<i class="fas fa-user ml-2"></i>
+
+                        </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('etat_list', {'id': app.user.id}) }}"
-                           title="liste des révisions">Liste des révisions</a>
+                           title="liste des révisions">Liste des révisions<i class="fas fa-list ml-2"></i>
+
+                        </a>
                     </li>
                 {% endif %}
                 {% if app.user %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_logout') }}" title="logout">Se déconnecter</a>
+                        <a class="nav-link" href="{{ path('app_logout') }}" title="logout">Déconnecter<i class="fas fa-sign-out-alt ml-2"></i>
+
+                        </a>
                     </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_login') }}" title="Login">Se connecter</a>
+                            <a class="nav-link" href="{{ path('app_login') }}" title="Login">Se connecter<i class="fas fa-sign-out-alt ml-2"></i>
+
+                            </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('app_register') }}" title="création de compte">Créer un compte</a>

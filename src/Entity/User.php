@@ -54,6 +54,11 @@ class User implements UserInterface
      */
     private $etatDesLieux;
 
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $pays;
+
     public function __construct()
     {
         $this->etatDesLieux = new ArrayCollection();
@@ -190,6 +195,18 @@ class User implements UserInterface
                 $etatDesLieux->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPays(): ?string
+    {
+        return $this->pays;
+    }
+
+    public function setPays(string $pays): self
+    {
+        $this->pays = $pays;
 
         return $this;
     }

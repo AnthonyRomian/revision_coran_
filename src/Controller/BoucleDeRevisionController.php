@@ -5,23 +5,24 @@ namespace App\Controller;
 use App\Entity\BoucleDeRevision;
 use App\Entity\EtatDesLieux;
 use App\Entity\User;
-use App\Form\EtatDesLieuxType;
-use App\Service\CalculateurBoucle;
+use App\Service\MapService;
 use Doctrine\ORM\EntityManagerInterface;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class BoucleDeRevisionController extends AbstractController
 {
     private $entityManager;
+    private $mapService;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, MapService $mapService)
     {
         $this->entityManager = $entityManager;
+        $this->mapService = $mapService;
     }
 
 
@@ -35,8 +36,7 @@ class BoucleDeRevisionController extends AbstractController
 
         $id_util = $utilisateur->getId();
 
-        $etat_des_lieux_list = $this->entityManager->getRepository(EtatDesLieux::class)->findBy( array("user" => $id_util));
-
+        $etat_des_lieux_list = $this->entityManager->getRepository(EtatDesLieux::class)->findBy(array("user" => $id_util));
 
 
         return $this->render('revision/liste_revision.html.twig', [
@@ -56,7 +56,6 @@ class BoucleDeRevisionController extends AbstractController
 
 
     }
-
 
 
     /**
@@ -100,7 +99,7 @@ class BoucleDeRevisionController extends AbstractController
         $pdfOptions->set('defaultFont', 'Arial');
         $pdfOptions->setIsRemoteEnabled(true);
 
-         //instancie dompdf
+        //instancie dompdf
         $dompdf = new Dompdf($pdfOptions);
 
         $context = stream_context_create([
@@ -128,7 +127,7 @@ class BoucleDeRevisionController extends AbstractController
 
         //genere nom de fichier
 
-        $fichier = 'boucle-de-revision'.$this->getUser()->getNom().'.pdf';
+        $fichier = 'boucle-de-revision' . $this->getUser()->getNom() . '.pdf';
 
         // on envoie le pdf au navigateur
         $dompdf->stream($fichier, [
@@ -144,5 +143,32 @@ class BoucleDeRevisionController extends AbstractController
             'boucle' => $boucle_de_revision,
 
         ]);*/
+    }
+
+
+    /**
+     * @Route("/donneeMap", name="donneeMap", methods={"GET"})
+     */
+    public function getDonneeMap(): Response
+    {
+        $utilisateursData = $this->entityManager->getRepository("App:User")->findAll();
+        //recuperer les villes et lat / long de chaque user et mettre dans un tableau
+        $tableauMapUser = [];
+
+        for ($i = 0; $i < sizeof($utilisateursData); $i++) {
+            $test = $this->mapService->getMapInfo($utilisateursData[$i]->getPays());
+            $long = $test[1][0]['longitude'];
+            $lat = $test[1][0]['latitude'];
+            $capital = $test[1][0]['capitalCity'];
+            $nomPays = $test[1][0]['name'];
+
+            $range = ["capitalCity" => $capital,
+                "nomPays" => $nomPays,
+                "longitude" => $long,
+                "latitude" => $lat
+            ];
+            $tableauMapUser[] = $range;
+        }
+        return new JsonResponse($tableauMapUser);
     }
 }

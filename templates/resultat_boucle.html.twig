@@ -3,19 +3,20 @@
 {% block title %}Planning de révision{% endblock %}
 
 {% block body %}
-    <div >{%  include('include/nav.html.twig') %}</div>
+    <div>{% include('include/nav.html.twig') %}</div>
     <h3 class="bg-success rounded text-black py-2 my-1 text-center">Planning de révision</h3>
     <div class="container">
-        {#<h2 class="text-center">{{ utilisateur.nom }} {{ utilisateur.prenom }}</h2>
-        <h2 class="text-center">Nom de la boucle {{ boucle.nom }}</h2>#}
-        <h3 class="text-center">Votre boucle de révision comporte environ {{ boucle.nbreHizb }} ahzâb soit {{ boucle.nombrePages }} pages, Elle aura une durée de {{ boucle.duree }} jours </h3>
+        {# <h2 class="text-center">{{ utilisateur.nom }} {{ utilisateur.prenom }}</h2>
+        <h2 class="text-center">Nom de la boucle {{ boucle.nom }}</h2> #}
+        <h3 class="text-center">Votre boucle de révision comporte environ {{ boucle.nbreHizb }} ahzâb
+            soit {{ boucle.nombrePages }} pages, elle aura une durée de {{ boucle.duree }} jours </h3>
         <table class="table table-striped table-hover table-bordered">
             <thead class="thead-dark">
             <tr>
                 <th scope="col">Jour</th>
                 <th scope="col">Date du jour</th>
                 <th scope="col">Page de debut</th>
-                <th scope="col">Jusqu'à</th>
+                <th class="text-center" scope="col"><i class="far fa-arrow-alt-circle-right"></i></th>
                 <th scope="col">Page de fin</th>
             </tr>
             </thead>
@@ -32,7 +33,7 @@
                     {% if  j.PageDebut == "memorisation" %}
                         <td></td>
                     {% else %}
-                        <td>jusqu'à</td>
+                        <td class="text-center"><i class="far fa-arrow-alt-circle-right"></i></td>
                     {% endif %}
                     {% if  j.PageDebut == "memorisation" %}
                         <td>Jour d'ancrage / {{ j.PageFin }} </td>
@@ -43,14 +44,16 @@
                 </tbody>
             {% endfor %}
         </table>
-        <a href="{{ path('etat_list', {'id': app.user.id}) }}" ><button class="btn btn-success mb-2">Retour à la liste</button></a>
-        <a href="{{ path('download',{'id': etat_des_lieux.id }) }}" ><button class="btn btn-success mb-2"> Télécharger en PDF </button></a>
+        <a href="{{ path('etat_list', {'id': app.user.id}) }}">
+            <button class="btn btn-success mb-2"><i class="fas fa-chevron-circle-left mr-2"></i>Retour à la liste</button>
+        </a>
+        <a href="{{ path('download',{'id': etat_des_lieux.id }) }}">
+            <button class="btn btn-success mb-2"> Télécharger en PDF <i class="fas fa-file-download ml-2"></i>
+
+            </button>
+        </a>
+
     </div>
-
-
-
-
-
 {% endblock %}
 
 {% block javascripts %}
