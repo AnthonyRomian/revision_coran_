@@ -28,17 +28,14 @@ class ContactController extends AbstractController
 
             $message = (new Email())
                 ->from($contactFormData['email'])
-                ->to('your@mail.com')
-                ->subject('You got mail')
-                ->text('Sender : '.$contactFormData['email'].\PHP_EOL.
+                ->to('contact@quran-planner.com')
+                ->subject('contact - quran planner')
+                ->text('Email : '.$contactFormData['email'].\PHP_EOL.
                     $contactFormData['message'],
                     'text/plain');
             $mailer->send($message);
 
-
-
-
-            $this->addFlash('success', 'Your message has been sent');
+            $this->addFlash('success', 'Votre message a bien été envoyé');
 
             return $this->redirectToRoute('contact');
         }

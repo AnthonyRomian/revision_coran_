@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Vous n'avez pas les droits</h2>
+    <a href="https://quran-planner.com">
+        <img src="{{ asset('assets/img/logo_coran_revision.png') }}" alt="erreur_403">
+
+{% endblock %}
+
+{% block title %}Erreur 403 ! | {{ parent() }}{% endblock %}

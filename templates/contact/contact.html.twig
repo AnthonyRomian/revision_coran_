@@ -4,6 +4,13 @@
 {% block body %}
     <div>{% include('include/nav.html.twig') %}</div>
     <h3 class="bg-success rounded text-black py-2 my-4 text-center">Formulaire de contact</h3>
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-dark" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
      {{ form_start(formContact) }}
         <div class="row mb-3 px-5 pt-3 contact-form">
             <div class="col">
