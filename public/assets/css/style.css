@@ -1,3 +1,8 @@
 #maCarte {
     height: 400px;
 }
+
+body {
+    background-image: url("../../assets/img/test_body_revision_2.png");
+    background-size: contain;
+}

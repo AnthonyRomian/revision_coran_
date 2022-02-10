@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+    <div>{% include('include/nav.html.twig') %}</div>
+    <h3 class="bg-success rounded text-black py-2 my-4 text-center">Formulaire de contact</h3>
+     {{ form_start(formContact) }}
+        <div class="row mb-3 px-5 pt-3 contact-form">
+            <div class="col">
+                {{ form_row(formContact.fullName, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="col">
+                {{ form_row(formContact.email, {'attr': {'class': 'form-control'}}) }}
+            </div>
+
+        </div>
+    <div class="mb-1 px-5">
+        {{ form_row(formContact.message, {'attr': {'class': 'form-control'}}) }}
+
+    </div>
+
+    <div class="mb-1 px-5 pb-3">
+        <input type="submit" value="Envoyer" class="btn btn-success py-2 px-3">
+    </div>
+
+
+        {{ form_end(formContact) }}
+
+    </div>
+{% endblock %}

@@ -3,21 +3,50 @@
 {% block title %}Editer profil{% endblock %}
 
 {% block body %}
-    <div >{%  include('include/nav.html.twig') %}</div>
-    <h3 class="bg-success rounded text-black py-2 my-1 text-center">Editer le profil</h3>
+    <div>{% include('include/nav.html.twig') %}</div>
+
+    <h3 class="bg-success rounded text-black py-2 my-4 text-center">Editer le profil</h3>
 
     <div class="container">
         {{ form_start(profilForm) }}
-        {{ form_widget(profilForm) }}
+        <div class="mb-3 row">
+            <div class="col-6 col-sm-6">
+                <p>{{ form_row(profilForm.prenom) }}</p>
+            </div>
+            <div class="col-6 col-sm-6">
+                <p>{{ form_row(profilForm.nom) }}</p>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <div class="col-6 col-sm-6">
+                <p>{{ form_row(profilForm.email) }}</p>
+            </div>
+            <div class="col-6 col-sm-6">
+                <p>{{ form_row(profilForm.pays) }}</p>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <div class="col-6 col-sm-6">
+                <label for="profil_password_first" class="required">Mot de passe</label>
+                <input type="password" id="profil_password_first" name="profil[password][first]" required="required" class="form-control">
+            </div>
+            <div class="col-6 col-sm-6">
+                <label for="profil_password_second" class="required">Confirmer le mot de passe</label>
+                <input type="password" id="profil_password_second" name="profil[password][second]" required="required" class=" form-control">
+            </div>
+        </div>
         <div class="d-flex justify-content-center mt-3">
-                        <a href="{{ path('profil', {'id' : participant.id}) }}">
+            <a href="{{ path('profil', {'id' : participant.id}) }}">
                 <button type="submit" class="btn btn-success mr-3">Enregistrer</button>
             </a>
             <button type="reset" class="btn btn-success mr-3">Annuler</button>
 
         </div>
-        {{ form_end(profilForm) }}
-        <a href="{{ path('home') }}"><button class="btn btn-success mr-3"><i class="fas fa-chevron-circle-left mr-2"></i>Retour à l accueil</button></a>
+        {{ form_end(profilForm, { 'render_rest': false }) }}
+        <a href="{{ path('home') }}">
+            <button class="btn btn-success mr-3 mt-1"><i class="fas fa-chevron-circle-left mr-2"></i>Retour à l accueil
+            </button>
+        </a>
     </div>
 
 {% endblock %}

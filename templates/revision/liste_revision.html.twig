@@ -3,65 +3,69 @@
 {% block title %}Liste des révisions{% endblock %}
 
 {% block body %}
-    <div >{%  include('include/nav.html.twig') %}</div>
+    <div>{% include('include/nav.html.twig') %}</div>
     <h3 class="bg-success rounded text-black py-2 my-4 text-center">Liste des plannings de révision</h3>
 
 
-        <div class="d-flex flex-wrap my-2 center" >
-    {% for e in etat_des_lieux_list %}
-            <div class="card flex-fill m-1" width="33%"  style="width: 20rem;">
+    <div class="d-flex flex-wrap my-2 center">
+        {% for e in etat_des_lieux_list %}
+            <div class="card flex-fill m-1" width="33%" style="width: 20rem;">
                 <div class="card-header justify-center text-center">
                     <h5>{{ e.JoursDeDebut|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</h5>
                 </div>
                 <div class="card-body text-center">
                     <h6>Sourate début : {{ e.sourateDebut }}</h6>
-                    <h6>Verset de fin  : {{ e.sourateDebutVersetFin }}</h6>
+                    <h6>Verset de fin : {{ e.sourateDebutVersetFin }}</h6>
                     <h6>Sourate Fin : {{ e.sourateFin }}</h6>
-                    <h6>Verset de fin  : {{ e.sourateFinVersetFin }}</h6>
-                    <h6>Sourate(s) supp  : {% for s in e.sourateSupp %} {{ s }}
+                    <h6>Verset de fin : {{ e.sourateFinVersetFin }}</h6>
+                    <h6>Sourate(s) supp : {% for s in e.sourateSupp %} {{ s }}
                         {% endfor %}
                     </h6>
 
                 </div>
                 <div class="card-footer text-center">
-                    <a href="{{ path('resultat', {'id': e.id}) }}"><button class="btn btn-success m-1 ">Acceder au plan de révision<i class="far fa-eye ml-2"></i>
+                    <a href="{{ path('resultat', {'id': e.id}) }}">
+                        <button class="btn btn-success m-1 ">Acceder au plan de révision<i class="far fa-eye ml-2"></i>
 
-                        </button></a>
+                        </button>
+                    </a>
                     <a onclick="functionDelete()">
-                        <button id="boutonSupprimer" value="{{ e.id }}" class="btn btn-success m-1">Supprimer la révision<i class="far fa-trash-alt ml-2"></i>
+                        <button id="boutonSupprimer" value="{{ e.id }}" class="btn btn-success m-1">Supprimer la
+                            révision<i class="far fa-trash-alt ml-2"></i>
 
                         </button>
                     </a>
                 </div>
             </div>
-    {% endfor %}
-        </div>
+        {% endfor %}
+    </div>
 {% endblock %}
 
 {% block javascripts %}
     <script>
         let bouton_delete = document.getElementById('boutonSupprimer').value;
+
         /* FUNCTION SUPPR */
         function functionDelete() {
-                    // j'affiche un message de suppression en cours de l'utilisateur
-                    console.log('Appel de la fonction delete'+bouton_delete)
+            // j'affiche un message de suppression en cours de l'utilisateur
+            console.log('Appel de la fonction delete' + bouton_delete)
 
-                    // Executer une requete pour chaque selectionné
-                    fetch("/revision_coran/public/listeEtat/delete/"+ bouton_delete, {
-                        method: "POST"
-                    }).then(response => {
-                            if (response.ok) {
-                                // j'appelle la fonction de réactualisation de la page
-                                setTimeout(function () {
-                                    location.reload();
-                                }, 1000);
-                            } else {
-                                setTimeout(function () {
-                                    location.reload();
-                                }, 1000);
-                                console.error('Retour du serveur : ', response.status)
-                            }
-                    });
+            // Executer une requete pour chaque selectionné
+            fetch("/revision_coran/public/listeEtat/delete/" + bouton_delete, {
+                method: "POST"
+            }).then(response => {
+                if (response.ok) {
+                    // j'appelle la fonction de réactualisation de la page
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1000);
+                    console.error('Retour du serveur : ', response.status)
+                }
+            });
         }
     </script>
 

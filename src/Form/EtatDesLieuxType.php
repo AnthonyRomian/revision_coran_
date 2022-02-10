@@ -30,19 +30,19 @@ class EtatDesLieuxType extends AbstractType
                 'class' => Sourate::class,
                 'choice_label' => 'latin',
                 'placeholder' => 'Ex : 1 - Al Fatiha',
-                'label' => 'Sourate début : ',
+                'label' => 'Sourate début',
                 'required' => false
             ])
             ->add('sourate_debut_verset_debut', ChoiceType::class, [
                 'placeholder' => 'Ex : 1',
                 'required' => false,
                 'mapped' => true,
-                'label' => 'Verset début : '
+                'label' => 'Verset début'
             ])
             ->add('sourate_debut_verset_fin', ChoiceType::class, [
                 'placeholder' => 'Ex : 7',
                 'required' => false,
-                'label' => 'Verset fin : '
+                'label' => 'Verset fin'
 
             ])
             ->add('sourate_fin', EntityType::class, [
@@ -50,21 +50,21 @@ class EtatDesLieuxType extends AbstractType
                 'class' => Sourate::class,
                 'choice_label' => 'latin',
                 'placeholder' => 'Ex : 2 - Al Baqara',
-                'label' => 'Sourate fin : ',
+                'label' => 'Sourate fin',
                 'required' => false
 
             ])
             ->add('sourate_fin_verset_debut', ChoiceType::class, [
                 'placeholder' => 'Ex : 1',
                 'required' => false,
-                'label' => 'Verset début : '
+                'label' => 'Verset début'
 
 
             ])
             ->add('sourate_fin_verset_fin', ChoiceType::class, [
                 'placeholder' => 'Ex : 102',
                 'required' => false,
-                'label' => 'Verset fin : '
+                'label' => 'Verset fin'
 
             ])
             ->add('sourateSupp', TextType::class,[
@@ -74,7 +74,7 @@ class EtatDesLieuxType extends AbstractType
                     'hidden' => 'true'
                 ],
 
-                'label' => 'Sourate Supplémentaire : ',
+                'label' => 'Sourate Supplémentaire',
                 'data'=> [null]
             ])
             ->add('JoursDeDebut', DateTimeType::class, [
@@ -82,12 +82,12 @@ class EtatDesLieuxType extends AbstractType
                 'required' => false,
                 'widget' => 'single_text',
                 'input' => 'datetime',
-                'label' => 'Premier jour de révision :',
+                'label' => 'Premier jour de révision',
                 'mapped' => true,
                 'by_reference' => true
             ])
             ->add('joursDeMemo', ChoiceType::class, [
-                'label' => 'Jour de mémorisation :',
+                'label' => 'Jour de mémorisation',
                 'label_attr' => [
                     'class' => 'col',
                 ],

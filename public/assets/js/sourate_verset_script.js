@@ -11,7 +11,7 @@ window.onload = () => {
         console.log(form)
         let data = this.name + "=" + this.value;
 
-        console.log(data)
+        //console.log(data)
 
 
 
@@ -27,9 +27,9 @@ window.onload = () => {
 
                 let content = document.createElement("html");
                 content.innerHTML = html;
-                console.log(html)
+                //console.log(html)
 
-                console.log(content)
+                //console.log(content)
                 let nouveauSelect = content.querySelector("#etat_des_lieux_sourate_debut_verset_debut");
                 document.querySelector("#etat_des_lieux_sourate_debut_verset_debut").replaceWith(nouveauSelect);
                 console.log(nouveauSelect)
@@ -85,5 +85,8 @@ window.onload = () => {
                 document.querySelector("#etat_des_lieux_sourate_fin_verset_fin").replaceWith(nouveauSelect);
             })
     });
+
+
+
 
 }

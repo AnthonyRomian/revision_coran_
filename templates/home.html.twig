@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Acceuil{% endblock %}
+{% block title %}Révision planner{% endblock %}
 
 {% block body %}
     <div>{% include('include/nav.html.twig') %}</div>
     <div class="container">
         <div class="row">
-            <div class="col-8 my-4">
+            <div class="my-4 col-md-12 col-lg-8">
                 <h6 class="">Le révision planner c'est quoi ?</h6>
                 <p class=" text-justify">Le révision planner est un outil gratuit qui permet d'obtenir un plan de
                     révision du Quran sur mesure selon ce que l'on a appris.<br>
@@ -32,7 +32,7 @@
                 </p>
 
             </div>
-            <img class="col-4 p-2" src="{{ asset('assets/img/preview_revision.jpg') }}" alt="exemple">
+            <img class="col-4 p-2 d-none d-lg-block d-xl-none d-none d-xl-block" src="{{ asset('assets/img/preview_revision.jpg') }}" alt="exemple">
         </div>
         {% if app.user %}
         <h3 class="bg-success rounded text-black py-2 text-center">Afin d'obtenir un planning de révision,
@@ -48,16 +48,16 @@
             <div class="col-xl col-md-6">
                 {{ form_widget(EtatDesLieuxForm.sourate_debut) }}
             </div>
-            <div class="col-xl-2 py-2 col-md-6">
+            <div class="col-xl-2 py-2 col-md-3">
                 {{ form_label(EtatDesLieuxForm.sourate_debut_verset_debut) }}
             </div>
-            <div class="col-xl-2 col-md-6">
+            <div class="col-xl-2 col-md-3">
                 {{ form_widget(EtatDesLieuxForm.sourate_debut_verset_debut) }}
             </div>
-            <div class="col-xl-2 py-2 col-md-6">
+            <div class="col-xl-2 py-2 col-md-3">
                 {{ form_label(EtatDesLieuxForm.sourate_debut_verset_fin) }}
             </div>
-            <div class="col-xl-2 col-md-6">
+            <div class="col-xl-2 col-md-3">
                 {{ form_widget(EtatDesLieuxForm.sourate_debut_verset_fin) }}
             </div>
         </div>
@@ -68,16 +68,16 @@
             <div class="col-xl-2 col-md-6">
                 {{ form_widget(EtatDesLieuxForm.sourate_fin) }}
             </div>
-            <div class="col-xl-2 py-2 col-md-6">
+            <div class="col-xl-2 py-2 col-md-3">
                 {{ form_label(EtatDesLieuxForm.sourate_fin_verset_debut) }}
             </div>
-            <div class="col-xl-2 col-md-6">
+            <div class="col-xl-2 col-md-3">
                 {{ form_widget(EtatDesLieuxForm.sourate_fin_verset_debut) }}
             </div>
-            <div class="col-xl-2 py-2 col-md-6">
+            <div class="col-xl-2 py-2 col-md-3">
                 {{ form_label(EtatDesLieuxForm.sourate_fin_verset_fin) }}
             </div>
-            <div class="col-xl-2 col-md-6">
+            <div class="col-xl-2 col-md-3">
                 {{ form_widget(EtatDesLieuxForm.sourate_fin_verset_fin) }}
             </div>
         </div>
@@ -85,7 +85,7 @@
         <h6 class="my-3">Etape 2 - Renseigner les sourates supplémentaires isolées que vous avez memorisé</h6>
         <div class="row my-3">
             <div class="col-xl-3 py-2 col-md-6">
-                <label class="" for="etat_des_lieux_sourate_supp">Sourate(s) supplémentaire(s) : </label>
+                <label class="" for="etat_des_lieux_sourate_supp">Sourate(s) supplémentaire(s)</label>
             </div>
             <div class="col-xl-2 py-2 col-md-6">
                 <select id="etat_des_lieux_sourate_supp" class="form-control">
@@ -207,7 +207,7 @@
                 </select>
             </div>
             <div class="col-xl py-2 col-md-3">
-                <a onclick="functionAdd()" class="btn btn-success "><i class="fas fa-plus px-2"></i>
+                <a onclick="functionAdd()" class="btn btn-success px-2"><i class="fas fa-plus mr-2"></i>Ajouter
 
                 </a>
                 <a onclick="functionRaz()" class="btn btn-success "><i class="far fa-trash-alt px-2"></i></a>
@@ -248,49 +248,6 @@
         <a class="btn btn-success my-1" href="{{ path('app_login') }}" title="Login">Se connecter</a>
         <a class="btn btn-success" href="{{ path('app_register') }}" title="création de compte">Créer un compte</a>
     {% endif %}
-
-    <h4 class="bg-secondary rounded text-black py-2 text-center">Pays des utilisateurs</h4>
-    <div id="maCarte"></div>
-
-    {# --------- javascript maps --------- #}
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-            crossorigin=""></script>
-    <script>
-        var carte = L.map('maCarte').setView([0, 0], 2);
-
-
-        L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
-            // Il est toujours bien de laisser le lien vers la source des données
-            attribution: 'données © <a href="//osm.org/copyright">OpenStreetMap</a>/ODbL - rendu <a href="//openstreetmap.fr">OSM France</a>',
-            minZoom: 1,
-            maxZoom: 20
-        }).addTo(carte);
-        window.onload = function () {
-            // Fonction d'initialisation qui s'exécute lorsque le DOM est chargé
-            initMap();
-        };
-
-        let xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = () => {
-            // transac finie ?
-            if (xmlhttp.readyState == 4) {
-                if (xmlhttp.status == 200) {
-                    let donnees = JSON.parse(xmlhttp.responseText)
-                    for (var i = 0; i < donnees.length; i++) {
-                        var marker = L.marker([donnees[i].latitude, donnees[i].longitude]).addTo(carte);
-                        marker.bindPopup(donnees[i].nomPays)
-                    }
-                } else {
-                    console.log(xmlhttp.statusText)
-                }
-            }
-        }
-
-        xmlhttp.open("GET", "http://localhost/revision_coran/public/donneeMap");
-        xmlhttp.send(null);
-
-    </script>
 {% endblock %}
 
 {% block javascripts %}
@@ -298,7 +255,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"
             integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
     <script>
 
         let choixSourate = document.getElementById('etat_des_lieux_sourate_supp')
@@ -324,6 +280,4 @@
             console.log(destinationsourate)
         }
     </script>
-
-
 {% endblock %}
