@@ -70,12 +70,6 @@ class EtatDesLieux
     private $sourate_fin_verset_fin;
 
     /**
-     * @ORM\OneToMany(targetEntity=BoucleDeRevision::class, mappedBy="etatDesLieux")
-     *
-     */
-    private $BoucleDeRevision;
-
-    /**
      * @ORM\Column(type="integer")
      */
     private $joursDeMemo;
@@ -104,11 +98,15 @@ class EtatDesLieux
      */
     private $sourateSupp = [];
 
+    /**
+     * @ORM\OneToOne(targetEntity=BoucleDeRevision::class, mappedBy="etatDesLieux", cascade={"persist", "remove"})
+     */
+    private $BoucleDeRevision;
+
 
     public function __construct()
     {
         $this->sourate = new ArrayCollection();
-        $this->BoucleDeRevision = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -237,32 +235,14 @@ class EtatDesLieux
         return $this;
     }
 
-    /**
-     * @return Collection|BoucleDeRevision[]
-     */
-    public function getBoucleDeRevision(): Collection
+
+    public function getBoucleDeRevision(): ?BoucleDeRevision
     {
         return $this->BoucleDeRevision;
     }
-
-    public function addBoucleDeRevision(BoucleDeRevision $boucleDeRevision): self
+    public function setBoucleDeRevision(?BoucleDeRevision $BoucleDeRevision): self
     {
-        if (!$this->BoucleDeRevision->contains($boucleDeRevision)) {
-            $this->BoucleDeRevision[] = $boucleDeRevision;
-            $boucleDeRevision->setEtatDesLieux($this);
-        }
-
-        return $this;
-    }
-
-    public function removeBoucleDeRevision(BoucleDeRevision $boucleDeRevision): self
-    {
-        if ($this->BoucleDeRevision->removeElement($boucleDeRevision)) {
-            // set the owning side to null (unless already changed)
-            if ($boucleDeRevision->getEtatDesLieux() === $this) {
-                $boucleDeRevision->setEtatDesLieux(null);
-            }
-        }
+        $this->BoucleDeRevision = $BoucleDeRevision;
 
         return $this;
     }
@@ -314,4 +294,18 @@ class EtatDesLieux
 
         return $this;
     }
+
+    public function getEtatDesLieux(): ?BoucleDeRevision
+    {
+        return $this->etatDesLieux;
+    }
+
+    public function setEtatDesLieux(?BoucleDeRevision $etatDesLieux): self
+    {
+        $this->etatDesLieux = $etatDesLieux;
+
+        return $this;
+    }
+
+
 }

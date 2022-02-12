@@ -30,17 +30,12 @@ class BoucleDeRevision
     private $nbreHizb;
 
     /**
-     * @ORM\ManyToOne(targetEntity=EtatDesLieux::class, inversedBy="BoucleDeRevision",cascade={"persist"})
-     */
-    private $etatDesLieux;
-
-    /**
      * @ORM\Column(type="datetime")
      */
     private $dateDebut;
 
     /**
-     * @ORM\OneToMany(targetEntity=JoursDeBoucle::class, mappedBy="boucleDeRevision")
+     * @ORM\OneToMany(targetEntity=JoursDeBoucle::class, mappedBy="boucleDeRevision", cascade={"remove"})
      */
     private $Jours_boucle;
 
@@ -53,6 +48,12 @@ class BoucleDeRevision
      * @ORM\Column(type="string", length=255)
      */
     private $nom;
+
+    /**
+     * @ORM\OneToOne(targetEntity=EtatDesLieux::class, inversedBy="BoucleDeRevision", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="etat_des_lieux_id", referencedColumnName="id", nullable=true)
+     */
+    private $etatDesLieux;
 
     public function __construct()
     {

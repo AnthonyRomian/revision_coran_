@@ -48,13 +48,13 @@ class BoucleDeRevisionController extends AbstractController
     /**
      * @Route("/listeEtat/delete/{id_edl}", name="delete", methods={"POST"})
      */
-    public function deleteBoucle(EtatDesLieux $id_edl)
+    public function deleteBoucle(EtatDesLieux $id_edl): Response
     {
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($id_edl);
-        $em->flush();
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($id_edl);
+            $em->flush();
 
-
+            return new Response();
     }
 
 

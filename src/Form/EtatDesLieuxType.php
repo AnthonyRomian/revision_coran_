@@ -152,7 +152,6 @@ class EtatDesLieuxType extends AbstractType
                     'mapped' => true,
                     'label' => 'Verset début : ',
                     'required' => true
-
                 ])
                 ->add('sourate_debut_verset_fin', EntityType::class, [
                     'class' => Verset::class,
@@ -162,7 +161,6 @@ class EtatDesLieuxType extends AbstractType
                     'mapped' => true,
                     'label' => 'Verset fin : ',
                     'required' => true
-
                 ]);
         };
 
@@ -177,7 +175,6 @@ class EtatDesLieuxType extends AbstractType
                     'placeholder' => 'Choisir verset',
                     'mapped' => true,
                     'label' => 'Verset début : '
-
                 ])
                 ->add('sourate_fin_verset_fin', EntityType::class, [
                     'class' => Verset::class,
@@ -189,6 +186,7 @@ class EtatDesLieuxType extends AbstractType
                 ]);
 
         };
+
 
 
         $builder->get('sourate_debut')->addEventListener(

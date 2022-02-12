@@ -2,8 +2,6 @@ window.onload = () => {
 
     let sourate_debut = document.querySelector('#etat_des_lieux_sourate_debut');
     let sourate_fin = document.querySelector('#etat_des_lieux_sourate_fin');
-    let jours_debut = document.querySelector('#etat_des_lieux_JoursDeDebut');
-
 
 
     sourate_debut.addEventListener("change", function () {
@@ -12,6 +10,7 @@ window.onload = () => {
         let data = this.name + "=" + this.value;
 
         //console.log(data)
+        console.log(form.action);
 
 
 

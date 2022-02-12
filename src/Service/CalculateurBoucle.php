@@ -16,13 +16,16 @@ class CalculateurBoucle extends AbstractController
 {
 
     private $apirequest;
+    private $entityManager;
 
-    public function __construct(CallApiService $apirequest)
+    public function __construct(CallApiService $apirequest, EntityManagerInterface $entityManager)
     {
         $this->apirequest = $apirequest;
+        $this->entityManager = $entityManager;
+
     }
 
-    public function CalculerBoucle(EtatDesLieux $etatDesLieux, EntityManagerInterface $entityManager): BoucleDeRevision
+    public function CalculerBoucle(EtatDesLieux $etatDesLieux): BoucleDeRevision
     {
         $boucle_de_revision_1 = 7;
         $boucle_de_revision_2 = 14;
@@ -42,7 +45,7 @@ class CalculateurBoucle extends AbstractController
         $boucle_de_revision->setDateDebut($etatDesLieux->getJoursDeDebut());
         $boucle_de_revision->setNom($nom . '-revision-' . uniqid());
         $joursDebut = $boucle_de_revision->getDateDebut();
-        $Souraterepo = $entityManager->getRepository(Sourate::class);
+        $Souraterepo = $this->entityManager->getRepository(Sourate::class);
         dump($etatDesLieux);
 
         $joursDeMemorisation = $etatDesLieux->getJoursDeMemo();
@@ -210,8 +213,8 @@ class CalculateurBoucle extends AbstractController
                     $jours_de_revision->setNombrePage("memorisation");
                     $jours_de_revision->setSourateDebutBoucleJournaliere("memorisation");
                     $jours_de_revision->setSourateFinBoucleJournaliere("memorisation");
-                    $entityManager->persist($jours_de_revision);
-                    $entityManager->flush();
+                    $this->entityManager->persist($jours_de_revision);
+                    $this->entityManager->flush();
                 } else {
                     //creer un tableau par jour
                     $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
@@ -290,8 +293,8 @@ class CalculateurBoucle extends AbstractController
                         $borne_courante += 1;
                     }
                     // persist des données jours de revision
-                    $entityManager->persist($jours_de_revision);
-                    $entityManager->flush();
+                    $this->entityManager->persist($jours_de_revision);
+                    $this->entityManager->flush();
                 }
             }
         } else if ($quantité_hizb >= 15 && $quantité_hizb <= 28) {
@@ -342,8 +345,8 @@ class CalculateurBoucle extends AbstractController
                     $jours_de_revision->setNombrePage("memorisation");
                     $jours_de_revision->setSourateDebutBoucleJournaliere("memorisation");
                     $jours_de_revision->setSourateFinBoucleJournaliere("memorisation");
-                    $entityManager->persist($jours_de_revision);
-                    $entityManager->flush();
+                    $this->entityManager->persist($jours_de_revision);
+                    $this->entityManager->flush();
                 } else {
                     //creer un tableau par jour
                     $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
@@ -421,8 +424,8 @@ class CalculateurBoucle extends AbstractController
                         $borne_courante += 1;
                     }
                     // persist des données jours de revision
-                    $entityManager->persist($jours_de_revision);
-                    $entityManager->flush();
+                    $this->entityManager->persist($jours_de_revision);
+                    $this->entityManager->flush();
                 }
                 // generer un pdf de rappel
                 // generer une suite d email avec portion a reviser
@@ -476,8 +479,8 @@ class CalculateurBoucle extends AbstractController
                     $jours_de_revision->setNombrePage("memorisation");
                     $jours_de_revision->setSourateDebutBoucleJournaliere("memorisation");
                     $jours_de_revision->setSourateFinBoucleJournaliere("memorisation");
-                    $entityManager->persist($jours_de_revision);
-                    $entityManager->flush();
+                    $this->entityManager->persist($jours_de_revision);
+                    $this->entityManager->flush();
                 } else {
                     //creer un tableau par jour
                     $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
@@ -555,8 +558,8 @@ class CalculateurBoucle extends AbstractController
                         $borne_courante += 1;
                     }
                     // persist des données jours de revision
-                    $entityManager->persist($jours_de_revision);
-                    $entityManager->flush();
+                    $this->entityManager->persist($jours_de_revision);
+                    $this->entityManager->flush();
                 }
 
             }
@@ -609,8 +612,8 @@ class CalculateurBoucle extends AbstractController
                     $jours_de_revision->setNombrePage("memorisation");
                     $jours_de_revision->setSourateDebutBoucleJournaliere("memorisation");
                     $jours_de_revision->setSourateFinBoucleJournaliere("memorisation");
-                    $entityManager->persist($jours_de_revision);
-                    $entityManager->flush();
+                    $this->entityManager->persist($jours_de_revision);
+                    $this->entityManager->flush();
                 } else {
                     //creer un tableau par jour
                     $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
@@ -688,8 +691,8 @@ class CalculateurBoucle extends AbstractController
                         $borne_courante += 1;
                     }
                     // persist des données jours de revision
-                    $entityManager->persist($jours_de_revision);
-                    $entityManager->flush();
+                    $this->entityManager->persist($jours_de_revision);
+                    $this->entityManager->flush();
                 }
             }
         } else if ($quantité_hizb >= 56 && $quantité_hizb <= 60) {
@@ -750,8 +753,8 @@ class CalculateurBoucle extends AbstractController
                     $jours_de_revision->setNombrePage("memorisation");
                     $jours_de_revision->setSourateDebutBoucleJournaliere("memorisation");
                     $jours_de_revision->setSourateFinBoucleJournaliere("memorisation");
-                    $entityManager->persist($jours_de_revision);
-                    $entityManager->flush();
+                    $this->entityManager->persist($jours_de_revision);
+                    $this->entityManager->flush();
                 } else {
                     //creer un tableau par jour
                     $jours_de_revision->setBoucleDeRevision($boucle_de_revision);
@@ -829,8 +832,8 @@ class CalculateurBoucle extends AbstractController
                         $borne_courante += 1;
                     }
                     // persist des données jours de revision
-                    $entityManager->persist($jours_de_revision);
-                    $entityManager->flush();
+                    $this->entityManager->persist($jours_de_revision);
+                    $this->entityManager->flush();
                 }
             }
         }

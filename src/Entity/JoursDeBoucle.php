@@ -38,7 +38,7 @@ class JoursDeBoucle
     private $nombre_page;
 
     /**
-     * @ORM\ManyToOne(targetEntity=BoucleDeRevision::class, inversedBy="Jours_boucle",cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity=BoucleDeRevision::class, inversedBy="Jours_boucle",cascade={"persist", "remove"})
      */
     private $boucleDeRevision;
 
