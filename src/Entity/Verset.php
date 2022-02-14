@@ -47,6 +47,11 @@ class Verset
      */
     private $quart_hizb;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $page;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -108,6 +113,18 @@ class Verset
     public function setQuartHizb(string $quart_hizb): self
     {
         $this->quart_hizb = $quart_hizb;
+
+        return $this;
+    }
+
+    public function getPage(): ?int
+    {
+        return $this->page;
+    }
+
+    public function setPage(int $page): self
+    {
+        $this->page = $page;
 
         return $this;
     }

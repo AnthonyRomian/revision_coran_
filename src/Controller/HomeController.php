@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
+
     /**
      * @Route("/", name="home")
      */
@@ -26,26 +27,17 @@ class HomeController extends AbstractController
         date_default_timezone_set('Europe/Paris');
         setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
 
-
         $utilisateur = $this->getUser();
-
-        //$user_id = $utilisateur->getId();
-
         $etatDesLieux = new EtatDesLieux();
         $etatDesLieuxForm = $this->createForm(EtatDesLieuxType::class, $etatDesLieux);
-
-        $userconnecte = $this->getUser();
-        $etatDesLieux->setUser($userconnecte);
-
+        $etatDesLieux->setUser($utilisateur);
         $etatDesLieuxForm->handleRequest($request);
 
         if($etatDesLieuxForm->isSubmitted() && $etatDesLieuxForm->isValid())
         {
-
-            $calculateurBoucle->CalculerBoucle($etatDesLieux, $entityManager);
+            $calculateurBoucle->CalculerBoucle($etatDesLieux);
             $entityManager->persist($etatDesLieux);
             $entityManager->flush();
-
             $id_edl = $etatDesLieux->getId();
 
             return $this->redirectToRoute('resultat', [
@@ -59,7 +51,5 @@ class HomeController extends AbstractController
                 'EtatDesLieuxForm' => $etatDesLieuxForm->createView(),
             ]);
     }
-
-
 
 }

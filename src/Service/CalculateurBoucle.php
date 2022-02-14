@@ -8,6 +8,7 @@ use App\Entity\BoucleDeRevision;
 use App\Entity\EtatDesLieux;
 use App\Entity\JoursDeBoucle;
 use App\Entity\Sourate;
+use App\Entity\Verset;
 use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,8 +36,6 @@ class CalculateurBoucle extends AbstractController
 
         $boucle_de_revision = new BoucleDeRevision();
 
-
-
         $nom = $this->getUser()->getNom();
         date_default_timezone_set('Europe/Paris');
         setlocale(LC_TIME, 'fr_FR.utf8', 'fra');
@@ -46,7 +45,7 @@ class CalculateurBoucle extends AbstractController
         $boucle_de_revision->setNom($nom . '-revision-' . uniqid());
         $joursDebut = $boucle_de_revision->getDateDebut();
         $Souraterepo = $this->entityManager->getRepository(Sourate::class);
-        dump($etatDesLieux);
+        //dump($etatDesLieux);
 
         $joursDeMemorisation = $etatDesLieux->getJoursDeMemo();
         $sourate_debut = $etatDesLieux->getSourateDebut();
@@ -65,13 +64,11 @@ class CalculateurBoucle extends AbstractController
 
         //-------------- Sourate supp -----------------------//
         $tableauSourateSupp = explode(",", $etatDesLieux->getSourateSupp()[0]);
-
         $tableauSourateAvant[] = null;
         $tableauSourateApres[] = null;
         $page_finSourateSupp = 605;
         $hizbSourateAvant = 0;
         $hizbSourateApres = 0;
-
 
         if ($tableauSourateSupp[0] !== "") {
             // pour chaque sourate supp determine page debut & fin + nbre de page
@@ -82,44 +79,42 @@ class CalculateurBoucle extends AbstractController
 
             for ($y = 0; $y < sizeof($tableauSourateSupp); $y++) {
                 $sourateSupp = $Souraterepo->findOneBy(['latin' => $tableauSourateSupp[$y]]);
-                $page_debutSourateSupp = $this->apirequest->getSurahData($sourateSupp->getId())['data']['ayahs'][array_key_first($this->apirequest->getSurahData($sourateSupp->getId())['data']['ayahs'])]['page'];
-                $page_finSourateSupp = $this->apirequest->getSurahData($sourateSupp->getId())['data']['ayahs'][array_key_last($this->apirequest->getSurahData($sourateSupp->getId())['data']['ayahs'])]['page'];
+                // recherche dans BDD
+                $test2_verset = $this->entityManager->getRepository(Verset::class)->findBy(array("sourate" => $sourateSupp->getId()));
+                $page_debutSourateSupp = $test2_verset[array_key_first($test2_verset)]->getPage();
+                $page_finSourateSupp = $test2_verset[array_key_last($test2_verset)]->getPage();
 
                 //nombre de page sourate supp
                 $nombre_pageSourateSupp += ($page_finSourateSupp + 1) - $page_debutSourateSupp;
 
-                if ($sourateSupp->getId() < $sourate_debut_search->getId() ){
-                    $tableauSourateAvant[] = $sourateSupp->getId() ;
-
-                } elseif ($sourateSupp->getId() > $sourate_fin_search->getId()){
+                if ($sourateSupp->getId() < $sourate_debut_search->getId()) {
+                    $tableauSourateAvant[] = $sourateSupp->getId();
+                } elseif ($sourateSupp->getId() > $sourate_fin_search->getId()) {
                     $tableauSourateApres[] = $sourateSupp->getId();
-
-
                 }
             }
             if ($tableauSourateAvant !== [null]) {
                 for ($x = 0; $x < sizeof($tableauSourateAvant); $x++) {
-                    $souratesAvantDebutPage = $this->apirequest->getSurahData($tableauSourateAvant[$x])['data']['ayahs'][array_key_first($this->apirequest->getSurahData($tableauSourateAvant[$x])['data']['ayahs'])]['page'];
-                    $sourateAvantFinPage = $this->apirequest->getSurahData($tableauSourateAvant[$x])['data']['ayahs'][array_key_last($this->apirequest->getSurahData($tableauSourateAvant[$x])['data']['ayahs'])]['page'];
-                    $quartHizbdebut = $this->apirequest->getSurahData($tableauSourateAvant[$x])['data']['ayahs'][array_key_first($this->apirequest->getSurahData($tableauSourateAvant[$x])['data']['ayahs'])]['hizbQuarter'];
-                    $quartHizbfin = $this->apirequest->getSurahData($tableauSourateAvant[$x])['data']['ayahs'][array_key_last($this->apirequest->getSurahData($tableauSourateAvant[$x])['data']['ayahs'])]['hizbQuarter'];
-                    $hizbSourateAvant += ($quartHizbfin-$quartHizbdebut)/4;
-
+                    $verset = $this->entityManager->getRepository(Verset::class)->findBy(array("sourate" => $tableauSourateAvant[$x]));
+                    $souratesAvantDebutPage = $verset[array_key_first($verset)]->getPage();
+                    $sourateAvantFinPage = $verset[array_key_last($verset)]->getPage();
+                    $quartHizbdebut = $verset[array_key_first($verset)]->getHizb();
+                    $quartHizbfin = $verset[array_key_last($verset)]->getHizb();
+                    $hizbSourateAvant += ($quartHizbfin - $quartHizbdebut) / 4;
                     $range = ["num_sourate" => $tableauSourateAvant[$x],
                         "premiere_page" => $souratesAvantDebutPage,
                         "derniere_page" => $sourateAvantFinPage];
                     $tableauSourateAvant[$x] = $range;
                 }
-
             }
             if ($tableauSourateApres !== [null]) {
                 for ($x = 0; $x < sizeof($tableauSourateApres); $x++) {
-                    $sourateApresDebutPage = $this->apirequest->getSurahData($tableauSourateApres[$x])['data']['ayahs'][array_key_first($this->apirequest->getSurahData($tableauSourateApres[$x])['data']['ayahs'])]['page'];
-                    $sourateApresFinPage = $this->apirequest->getSurahData($tableauSourateApres[$x])['data']['ayahs'][array_key_last($this->apirequest->getSurahData($tableauSourateApres[$x])['data']['ayahs'])]['page'];
-                    $quartHizbdebut = $this->apirequest->getSurahData($tableauSourateApres[$x])['data']['ayahs'][array_key_first($this->apirequest->getSurahData($tableauSourateApres[$x])['data']['ayahs'])]['hizbQuarter'];
-                    $quartHizbfin = $this->apirequest->getSurahData($tableauSourateApres[$x])['data']['ayahs'][array_key_last($this->apirequest->getSurahData($tableauSourateApres[$x])['data']['ayahs'])]['hizbQuarter'];
-                    $hizbSourateApres += ($quartHizbfin-$quartHizbdebut)/4;
-
+                    $verset = $this->entityManager->getRepository(Verset::class)->findBy(array("sourate" => $tableauSourateApres[$x]));
+                    $sourateApresDebutPage = $verset[array_key_first($verset)]->getPage();
+                    $sourateApresFinPage = $verset[array_key_last($verset)]->getPage();
+                    $quartHizbdebut = $verset[array_key_first($verset)]->getHizb();
+                    $quartHizbfin = $verset[array_key_last($verset)]->getHizb();
+                    $hizbSourateApres += ($quartHizbfin - $quartHizbdebut) / 4;
                     $range = ["num_sourate" => $tableauSourateApres[$x],
                         "premiere_page" => $sourateApresDebutPage,
                         "derniere_page" => $sourateApresFinPage];
@@ -130,17 +125,14 @@ class CalculateurBoucle extends AbstractController
             $nombre_pageSourateSupp = 0;
         }
         //-------------- Sourate supp -----------------------//
-
         //calcul du nombre de pages
-        $page_debutBouclePrincipale = $this->apirequest->getSurahData($sourate_debut_search->getId())['data']['ayahs'][$sourate_debut_verset_debut - 1]['page'];
-        $page_finBouclePrincipale = $this->apirequest->getSurahData($sourate_fin_search->getId())['data']['ayahs'][$sourate_fin_verset_fin - 1]['page'];
+        $verset_debut = $this->entityManager->getRepository(Verset::class)->findBy(array("sourate" => $sourate_debut_search->getId()));
+        $verset_fin = $this->entityManager->getRepository(Verset::class)->findBy(array("sourate" => $sourate_fin_search->getId()));
+        $page_debutBouclePrincipale = $verset_debut[array_key_first($verset_debut)]->getPage();
+        $page_finBouclePrincipale = $verset_fin[array_key_last($verset_fin)]->getPage();
         $total_page = ($page_finBouclePrincipale + 1) - $page_debutBouclePrincipale;
         $total_page += $nombre_pageSourateSupp;
-
         $boucle_de_revision->setNombrePages($total_page);
-        //TODO ajouter nombre page pour sourate supp
-
-
         // calculer le nombre de hizb total
         $handicap_quart_hizb = 0;
 
@@ -157,11 +149,10 @@ class CalculateurBoucle extends AbstractController
         if ($borne_inf_hizb == 4 || $borne_sup_hizb == 1) {
             $handicap_quart_hizb += 0.75;
         }
-
         $hizb_total = (($borne_sup + 1) - $borne_inf);
 
         $quantité_hizb = $hizb_total - $handicap_quart_hizb;
-        $quantité_hizb += $hizbSourateAvant+$hizbSourateApres;
+        $quantité_hizb += $hizbSourateAvant + $hizbSourateApres;
         $boucle_de_revision->setNbreHizb($quantité_hizb);
 
         //tableau de la boucle
@@ -192,13 +183,11 @@ class CalculateurBoucle extends AbstractController
                     }
                 }
             }
-
             // boucle principale pour decoupage des jours mettre dans tableau
             for ($i = 1; $i < $boucle_de_revision_1 + 1; $i++) {
                 $jours_de_revision = new JoursDeBoucle();
                 $jours_de_revision->setJours($i);
                 $jours_courant = $joursDebut;
-
                 if ($i === 1) {
                     $jours_de_revision->setDate($jours_courant);
                 } else {
@@ -228,26 +217,21 @@ class CalculateurBoucle extends AbstractController
                         $quotat_journalier = $nbre_page_jour;
                     }
                     $jours_de_revision->setNombrePage($quotat_journalier);
-                    dump("quotat journalier  : " . $quotat_journalier);
+                    //dump("quotat journalier  : " . $quotat_journalier);
                     //de valeur depart + X valeur de gap -> valeur + nombre par jour entier
                     for ($j = 0; $j < $quotat_journalier; $j++) {
-
                         if ($j === 0) {
-                            dump('borne courante  : ' . $borne_courante);
+                            //dump('borne courante  : ' . $borne_courante);
                             $jours_de_revision->setPageDebut($borne_courante);
-                            $borne_api_debut = $this->apirequest->getPageData($borne_courante)['data']['surahs'];
-                            $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
-                            $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
-                            $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
+                            $test_verset = $this->entityManager->getRepository(Verset::class)->findBy(array("page" => $borne_courante));
+                            $first_sourate = $test_verset[array_key_first($test_verset)]->getSourate()->getLatin();
                             $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate);
-
                             if ($tableauSourateAvant !== [null] && $jours_de_revision->getPageDebut() + $quotat_journalier < $page_debutBouclePrincipale) {
                                 for ($a = 0; $a < sizeof($tableauSourateAvant); $a++) {
                                     if ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && $compteur == false && sizeof($tableauSourateAvant) > 1 && $a < array_key_last($tableauSourateAvant)) {
                                         $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $tableauSourateAvant[$a + 1]["premiere_page"]);
                                     } elseif ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && $a == array_key_last($tableauSourateAvant)) {
                                         $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $page_debutBouclePrincipale);
-
                                     }
                                 }
                             }
@@ -263,12 +247,9 @@ class CalculateurBoucle extends AbstractController
                         }
                         if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
                             $jours_de_revision->setPageFin($borne_courante);
-                            $borne_api_fin = $this->apirequest->getPageData($borne_courante)['data']['surahs'];
-                            $num_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['number'];
-                            $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
-                            $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
+                            $test_verset = $this->entityManager->getRepository(Verset::class)->findBy(array("page" => $borne_courante));
+                            $last_sourate = $test_verset[array_key_last($test_verset)]->getSourate()->getLatin();
                             $jours_de_revision->setSourateFinBoucleJournaliere($last_sourate);
-
                         }
 
                         if ($tableauSourateAvant !== [null]) {
@@ -299,7 +280,7 @@ class CalculateurBoucle extends AbstractController
             }
         } else if ($quantité_hizb >= 15 && $quantité_hizb <= 28) {
             $boucle_de_revision->setDuree($boucle_de_revision_2);
-
+            $compteur = false;
             //nombre entier par jour
             $nbre_page_jour = (int)($total_page / ($boucle_de_revision_2 - 2));
             $borne_courante = $page_debutBouclePrincipale;
@@ -364,21 +345,17 @@ class CalculateurBoucle extends AbstractController
                     //de valeur depart + X valeur de gap -> valeur +nombre par jour entier
                     for ($j = 0; $j < $quotat_journalier; $j++) {
                         if ($j === 0) {
-                            dump('borne courante  : ' . $borne_courante);
+                            //dump('borne courante  : ' . $borne_courante);
                             $jours_de_revision->setPageDebut($borne_courante);
-                            $borne_api_debut = $this->apirequest->getPageData($borne_courante)['data']['surahs'];
-                            $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
-                            $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
-                            $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
+                            $test_verset = $this->entityManager->getRepository(Verset::class)->findBy(array("page" => $borne_courante));
+                            $first_sourate = $test_verset[array_key_first($test_verset)]->getSourate()->getLatin();
                             $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate);
-
                             if ($tableauSourateAvant !== [null] && $jours_de_revision->getPageDebut() + $quotat_journalier < $page_debutBouclePrincipale) {
                                 for ($a = 0; $a < sizeof($tableauSourateAvant); $a++) {
-                                    if ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && sizeof($tableauSourateAvant) > 1 && $a < array_key_last($tableauSourateAvant)) {
+                                    if ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && $compteur == false && sizeof($tableauSourateAvant) > 1 && $a < array_key_last($tableauSourateAvant)) {
                                         $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $tableauSourateAvant[$a + 1]["premiere_page"]);
                                     } elseif ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && $a == array_key_last($tableauSourateAvant)) {
                                         $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $page_debutBouclePrincipale);
-
                                     }
                                 }
                             }
@@ -394,12 +371,9 @@ class CalculateurBoucle extends AbstractController
                         }
                         if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
                             $jours_de_revision->setPageFin($borne_courante);
-                            $borne_api_fin = $this->apirequest->getPageData($borne_courante)['data']['surahs'];
-                            $num_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['number'];
-                            $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
-                            $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
+                            $test_verset = $this->entityManager->getRepository(Verset::class)->findBy(array("page" => $borne_courante));
+                            $last_sourate = $test_verset[array_key_last($test_verset)]->getSourate()->getLatin();
                             $jours_de_revision->setSourateFinBoucleJournaliere($last_sourate);
-
                         }
 
                         if ($tableauSourateAvant !== [null]) {
@@ -427,13 +401,10 @@ class CalculateurBoucle extends AbstractController
                     $this->entityManager->persist($jours_de_revision);
                     $this->entityManager->flush();
                 }
-                // generer un pdf de rappel
-                // generer une suite d email avec portion a reviser
-
             }
         } else if ($quantité_hizb >= 29 && $quantité_hizb <= 42) {
             $boucle_de_revision->setDuree($boucle_de_revision_3);
-
+            $compteur = false;
             //nombre entier par jour
             $nbre_page_jour = (int)($total_page / ($boucle_de_revision_3 - 3));
             $borne_courante = $page_debutBouclePrincipale;
@@ -498,21 +469,17 @@ class CalculateurBoucle extends AbstractController
                     //de valeur depart + X valeur de gap -> valeur +nombre par jour entier
                     for ($j = 0; $j < $quotat_journalier; $j++) {
                         if ($j === 0) {
-                            dump('borne courante  : ' . $borne_courante);
+                            //dump('borne courante  : ' . $borne_courante);
                             $jours_de_revision->setPageDebut($borne_courante);
-                            $borne_api_debut = $this->apirequest->getPageData($borne_courante)['data']['surahs'];
-                            $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
-                            $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
-                            $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
+                            $test_verset = $this->entityManager->getRepository(Verset::class)->findBy(array("page" => $borne_courante));
+                            $first_sourate = $test_verset[array_key_first($test_verset)]->getSourate()->getLatin();
                             $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate);
-
                             if ($tableauSourateAvant !== [null] && $jours_de_revision->getPageDebut() + $quotat_journalier < $page_debutBouclePrincipale) {
                                 for ($a = 0; $a < sizeof($tableauSourateAvant); $a++) {
-                                    if ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && sizeof($tableauSourateAvant) > 1 && $a < array_key_last($tableauSourateAvant)) {
+                                    if ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && $compteur == false && sizeof($tableauSourateAvant) > 1 && $a < array_key_last($tableauSourateAvant)) {
                                         $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $tableauSourateAvant[$a + 1]["premiere_page"]);
                                     } elseif ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && $a == array_key_last($tableauSourateAvant)) {
                                         $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $page_debutBouclePrincipale);
-
                                     }
                                 }
                             }
@@ -528,12 +495,9 @@ class CalculateurBoucle extends AbstractController
                         }
                         if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
                             $jours_de_revision->setPageFin($borne_courante);
-                            $borne_api_fin = $this->apirequest->getPageData($borne_courante)['data']['surahs'];
-                            $num_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['number'];
-                            $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
-                            $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
+                            $test_verset = $this->entityManager->getRepository(Verset::class)->findBy(array("page" => $borne_courante));
+                            $last_sourate = $test_verset[array_key_last($test_verset)]->getSourate()->getLatin();
                             $jours_de_revision->setSourateFinBoucleJournaliere($last_sourate);
-
                         }
 
                         if ($tableauSourateAvant !== [null]) {
@@ -561,12 +525,11 @@ class CalculateurBoucle extends AbstractController
                     $this->entityManager->persist($jours_de_revision);
                     $this->entityManager->flush();
                 }
-
             }
         } else if ($quantité_hizb >= 43 && $quantité_hizb <= 56) {
             $boucle_de_revision->setDuree($boucle_de_revision_4);
+            $compteur = false;
             // definir le nombre de page
-
             //nombre entier par jour ( - 4 pour enlever un samedi par semaine )
             $nbre_page_jour = (int)($total_page / ($boucle_de_revision_4 - 4));
             $borne_courante = $page_debutBouclePrincipale;
@@ -591,7 +554,6 @@ class CalculateurBoucle extends AbstractController
                     }
                 }
             }
-
             //boucle pour decoupage des jours mettre dans tableau
             for ($i = 1; $i < $boucle_de_revision_4 + 1; $i++) {
                 $jours_de_revision = new JoursDeBoucle();
@@ -631,21 +593,17 @@ class CalculateurBoucle extends AbstractController
                     //de valeur depart + X valeur de gap -> valeur +nombre par jour entier
                     for ($j = 0; $j < $quotat_journalier; $j++) {
                         if ($j === 0) {
-                            dump('borne courante  : ' . $borne_courante);
+                            //dump('borne courante  : ' . $borne_courante);
                             $jours_de_revision->setPageDebut($borne_courante);
-                            $borne_api_debut = $this->apirequest->getPageData($borne_courante)['data']['surahs'];
-                            $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
-                            $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
-                            $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
+                            $test_verset = $this->entityManager->getRepository(Verset::class)->findBy(array("page" => $borne_courante));
+                            $first_sourate = $test_verset[array_key_first($test_verset)]->getSourate()->getLatin();
                             $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate);
-
                             if ($tableauSourateAvant !== [null] && $jours_de_revision->getPageDebut() + $quotat_journalier < $page_debutBouclePrincipale) {
                                 for ($a = 0; $a < sizeof($tableauSourateAvant); $a++) {
-                                    if ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && sizeof($tableauSourateAvant) > 1 && $a < array_key_last($tableauSourateAvant)) {
+                                    if ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && $compteur == false && sizeof($tableauSourateAvant) > 1 && $a < array_key_last($tableauSourateAvant)) {
                                         $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $tableauSourateAvant[$a + 1]["premiere_page"]);
                                     } elseif ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && $a == array_key_last($tableauSourateAvant)) {
                                         $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $page_debutBouclePrincipale);
-
                                     }
                                 }
                             }
@@ -661,12 +619,9 @@ class CalculateurBoucle extends AbstractController
                         }
                         if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
                             $jours_de_revision->setPageFin($borne_courante);
-                            $borne_api_fin = $this->apirequest->getPageData($borne_courante)['data']['surahs'];
-                            $num_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['number'];
-                            $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
-                            $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
+                            $test_verset = $this->entityManager->getRepository(Verset::class)->findBy(array("page" => $borne_courante));
+                            $last_sourate = $test_verset[array_key_last($test_verset)]->getSourate()->getLatin();
                             $jours_de_revision->setSourateFinBoucleJournaliere($last_sourate);
-
                         }
 
                         if ($tableauSourateAvant !== [null]) {
@@ -700,8 +655,8 @@ class CalculateurBoucle extends AbstractController
 
             //si jours de memo revient 5 fois
             if ($joursDebut->format('N') == $joursDeMemorisation ||
-                (int)$joursDebut->format('N')+1 == (int)$joursDeMemorisation ||
-                $joursDebut->format('N') == "7" && $joursDeMemorisation == "1"){
+                (int)$joursDebut->format('N') + 1 == (int)$joursDeMemorisation ||
+                $joursDebut->format('N') == "7" && $joursDeMemorisation == "1") {
                 //nombre entier par jour
                 $nbre_page_jour = (int)($total_page / ($boucle_de_revision_5 - 5));
                 $borne_courante = $page_debutBouclePrincipale;
@@ -738,7 +693,6 @@ class CalculateurBoucle extends AbstractController
                 $jours_de_revision = new JoursDeBoucle();
                 $jours_de_revision->setJours($i);
                 $jours_courant = $joursDebut;
-
                 if ($i === 1) {
                     $jours_de_revision->setDate($jours_courant);
                 } else {
@@ -772,21 +726,17 @@ class CalculateurBoucle extends AbstractController
                     //de valeur depart + X valeur de gap -> valeur +nombre par jour entier
                     for ($j = 0; $j < $quotat_journalier; $j++) {
                         if ($j === 0) {
-                            dump('borne courante  : ' . $borne_courante);
+                            //dump('borne courante  : ' . $borne_courante);
                             $jours_de_revision->setPageDebut($borne_courante);
-                            $borne_api_debut = $this->apirequest->getPageData($borne_courante)['data']['surahs'];
-                            $num_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['number'];
-                            $nom_sourate_debut = $borne_api_debut[array_key_first($borne_api_debut)]['englishName'];
-                            $first_sourate = $num_sourate_debut . ' - ' . $nom_sourate_debut;
+                            $test_verset = $this->entityManager->getRepository(Verset::class)->findBy(array("page" => $borne_courante));
+                            $first_sourate = $test_verset[array_key_first($test_verset)]->getSourate()->getLatin();
                             $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate);
-
                             if ($tableauSourateAvant !== [null] && $jours_de_revision->getPageDebut() + $quotat_journalier < $page_debutBouclePrincipale) {
                                 for ($a = 0; $a < sizeof($tableauSourateAvant); $a++) {
                                     if ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && sizeof($tableauSourateAvant) > 1 && $a < array_key_last($tableauSourateAvant)) {
                                         $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $tableauSourateAvant[$a + 1]["premiere_page"]);
                                     } elseif ($jours_de_revision->getPageDebut() + $quotat_journalier > $tableauSourateAvant[$a]["derniere_page"] && $a == array_key_last($tableauSourateAvant)) {
                                         $jours_de_revision->setSourateDebutBoucleJournaliere($first_sourate . ' jusqu\'à la fin puis page ' . $page_debutBouclePrincipale);
-
                                     }
                                 }
                             }
@@ -802,14 +752,10 @@ class CalculateurBoucle extends AbstractController
                         }
                         if ($j == $quotat_journalier - 1 || $j == $nbre_page_jour - 1) {
                             $jours_de_revision->setPageFin($borne_courante);
-                            $borne_api_fin = $this->apirequest->getPageData($borne_courante)['data']['surahs'];
-                            $num_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['number'];
-                            $nom_sourate_fin = $borne_api_fin[array_key_last($borne_api_fin)]['englishName'];
-                            $last_sourate = $num_sourate_fin . ' - ' . $nom_sourate_fin;
+                            $test_verset = $this->entityManager->getRepository(Verset::class)->findBy(array("page" => $borne_courante));
+                            $last_sourate = $test_verset[array_key_last($test_verset)]->getSourate()->getLatin();
                             $jours_de_revision->setSourateFinBoucleJournaliere($last_sourate);
-
                         }
-
                         if ($tableauSourateAvant !== [null]) {
                             //dump('borne courante : '. $borne_courante);
                             for ($t = 0; $t < sizeof($tableauSourateAvant); $t++) {
