@@ -6,3 +6,25 @@ body {
     background-image: url("../img/background_jellije.png");
     background-size: contain;
 }
+
+@keyframes append-animation {
+    from {
+        transform: translateZ(10vh);
+        opacity: 0;
+    }
+    to {
+        transform: translateZ(0px);
+        opacity: 1;
+    }
+}
+.sourateSuppView {
+    animation-name: append-animation;
+    animation-duration: 1000ms;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: 1;
+}
+
+.form-check {
+    margin: 0 10px;
+}
+

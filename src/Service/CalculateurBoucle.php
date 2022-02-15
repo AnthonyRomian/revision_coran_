@@ -16,12 +16,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class CalculateurBoucle extends AbstractController
 {
 
-    private $apirequest;
     private $entityManager;
 
-    public function __construct(CallApiService $apirequest, EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->apirequest = $apirequest;
         $this->entityManager = $entityManager;
 
     }

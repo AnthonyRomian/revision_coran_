@@ -89,7 +89,7 @@ class EtatDesLieuxType extends AbstractType
             ->add('joursDeMemo', ChoiceType::class, [
                 'label' => 'Jour de mémorisation',
                 'label_attr' => [
-                    'class' => 'col',
+                    'class' => '',
                 ],
                 'mapped' => true,
                 'choices' => [
@@ -110,7 +110,7 @@ class EtatDesLieuxType extends AbstractType
                     'class' => 'label',
                 ],
                 'attr' => [
-                    'class' => 'row py-3'],
+                    'class' => 'row px-3'],
                 'label' => 'Voulez vous recevoir un Email journalier de vos révisions ?',
                 'choices' => [
                     'Oui' => true,

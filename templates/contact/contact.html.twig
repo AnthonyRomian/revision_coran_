@@ -1,9 +1,8 @@
 {% extends 'base.html.twig' %}
 
-
 {% block body %}
     <div>{% include('include/nav.html.twig') %}</div>
-    <h3 class="bg-success rounded text-black py-2 my-4 text-center">Formulaire de contact</h3>
+    <h3 class="bg-success rounded text-black py-2 m-3 text-center">Formulaire de contact</h3>
     {% for label, messages in app.flashes %}
         {% for message in messages %}
             <div class="alert alert-dark" role="alert">
@@ -12,7 +11,7 @@
         {% endfor %}
     {% endfor %}
      {{ form_start(formContact) }}
-        <div class="row mb-3 px-5 pt-3 contact-form">
+        <div class="row mb-3 px-3 pt-3 contact-form">
             <div class="col">
                 {{ form_row(formContact.fullName, {'attr': {'class': 'form-control'}}) }}
             </div>
@@ -21,17 +20,14 @@
             </div>
 
         </div>
-    <div class="mb-1 px-5">
+    <div class="mb-1 px-3">
         {{ form_row(formContact.message, {'attr': {'class': 'form-control'}}) }}
 
     </div>
 
-    <div class="mb-1 px-5 pb-3">
+    <div class="mb-1 px-3 pb-3">
         <input type="submit" value="Envoyer" class="btn btn-success py-2 px-3">
     </div>
-
-
         {{ form_end(formContact) }}
-
     </div>
 {% endblock %}

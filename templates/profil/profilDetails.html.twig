@@ -4,38 +4,38 @@
 
 {% block body %}
     <div >{%  include('include/nav.html.twig') %}</div>
-    <h3 class="bg-success rounded text-black py-2 my-4 text-center">Mon profil</h3>
+    <h3 class="bg-success rounded text-black py-2 m-3 text-center">Mon profil</h3>
 
     <div class="container my-3">
 
         <div class="row">
-            <div class="col-md-6 d-flex flex-column justify-content-center">
+            <div class="col-md-6 d-flex flex-column justify-content-center px-3" >
 
                 <div class="mb-3 row">
-                    <p class="col-4 col-sm-4 pr-5">Prénom :</p>
+                    <p class="col-3 col-sm-4 pr-5">Prénom</p>
                     <div class="col-8 col-sm-8">
                         <p >{{ participant.prenom }}</p>
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    <p class="col-4 col-sm-4 pr-5">Nom :</p>
+                    <p class="col-3 col-sm-4 pr-5">Nom</p>
                     <div class="col-8 col-sm-8">
                         <p >{{ participant.nom }}</p>
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    <p class="col-4 col-sm-4 pr-5">Email :</p>
+                    <p class="col-3 col-sm-4 pr-5">Email</p>
                     <div class="col-8 col-sm-8">
                         <p >{{ participant.email }}</p>
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    <p class="col-4 col-sm-4 pr-5">Pays :</p>
+                    <p class="col-3 col-sm-4 pr-5">Pays</p>
                     <div class="col-8 col-sm-8">
                         <p >{{ participant.pays }}</p>
                     </div>
                 </div>
-                <div class="row text-center">
+                <div class="row text-center px-3">
                     <a href="{{ path('home') }}"><button class="btn btn-success mr-3"><i class="fas fa-chevron-circle-left mr-2"></i>Retour</button></a>
                     <a href="{{ path('profil_edit', {'id': app.user.id}) }}"><button class="btn btn-success mr-3">Editer le profil<i class="fas fa-edit ml-2"></i>
 
