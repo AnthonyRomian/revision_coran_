@@ -9,6 +9,7 @@ use App\Service\MapService;
 use Doctrine\ORM\EntityManagerInterface;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,6 +28,7 @@ class BoucleDeRevisionController extends AbstractController
 
 
     /**
+     * @IsGranted("ROLE_USER")
      * @Route("/listeEtat/{id}", name="etat_list", methods={"GET"})
      */
     public function listeEtat(User $id): Response
@@ -46,6 +48,7 @@ class BoucleDeRevisionController extends AbstractController
     }
 
     /**
+     * @IsGranted("ROLE_USER")
      * @Route("/listeEtat/delete/{id_edl}", name="delete", methods={"POST"})
      */
     public function deleteBoucle(EtatDesLieux $id_edl): Response
@@ -59,6 +62,7 @@ class BoucleDeRevisionController extends AbstractController
 
 
     /**
+     * @IsGranted("ROLE_USER")
      * @Route("/resultat/{id}", name="resultat", methods={"GET"})
      */
     public function boucle(EtatDesLieux $id_edl): Response
@@ -81,6 +85,7 @@ class BoucleDeRevisionController extends AbstractController
 
 
     /**
+     * @IsGranted("ROLE_USER")
      * @Route("/resultat/{id}/download", name="download")
      */
     public function boucleDownload(EtatDesLieux $id_edl)
