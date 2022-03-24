@@ -6,21 +6,23 @@
     <div>{% include('include/nav.html.twig') %}</div>
     <h3 class="bg-success rounded text-black py-2 m-3 text-center">Liste des plannings de révision</h3>
 
-
     <div class="d-flex flex-wrap m-3 center">
         {% for e in etat_des_lieux_list %}
             <div class="card flex-fill m-1" width="33%" style="width: 20rem;">
                 <div class="card-header justify-center text-center">
                     <h5>{{ e.JoursDeDebut|format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</h5>
                 </div>
+
                 <div class="card-body text-center">
                     <h6>Sourate début : {{ e.sourateDebut }}</h6>
-                    <h6>Verset de fin : {{ e.sourateDebutVersetFin }}</h6>
+                    <h6>Verset de début : {{ e.sourateDebutVersetDebut }}</h6>
                     <h6>Sourate Fin : {{ e.sourateFin }}</h6>
                     <h6>Verset de fin : {{ e.sourateFinVersetFin }}</h6>
+                    {% if e.sourateSupp[0] is not null %}
                     <h6>Sourate(s) supp : {% for s in e.sourateSupp %} {{ s }}
                         {% endfor %}
                     </h6>
+                    {% endif %}
 
                 </div>
                 <div class="card-footer text-center">

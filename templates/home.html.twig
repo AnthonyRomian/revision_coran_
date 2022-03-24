@@ -37,15 +37,22 @@
         {% if app.user %}
         <h3 class="bg-success rounded text-black py-2 text-center">Afin d'obtenir un planning de révision,
             remplissez les champs suivants</h3>
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
 
         {{ form_start(EtatDesLieuxForm) }}
 
         <h6 class="my-3">Etape 1 - Renseigner la portion de sourates qui se suivent que vous avez memorisé</h6>
-        <div class="row my-3 ">
+        <div class="row my-3">
             <div class="col-6 py-2 col-sm-6 col-xl-2">
                 {{ form_label(EtatDesLieuxForm.sourate_debut) }}
             </div>
-            <div class="col-6  col-sm-6 col-xl">
+            <div class="col-6 col-xl-3 col-sm-6">
                 {{ form_widget(EtatDesLieuxForm.sourate_debut) }}
             </div>
             <div class="col-6  py-2 col-sm-3 col-xl-2">
@@ -54,25 +61,13 @@
             <div class="col-6  col-sm-3  col-xl-2">
                 {{ form_widget(EtatDesLieuxForm.sourate_debut_verset_debut) }}
             </div>
-            <div class="col-6 py-2 col-sm-3 col-xl-2">
-                {{ form_label(EtatDesLieuxForm.sourate_debut_verset_fin) }}
-            </div>
-            <div class="col-6  col-sm-3  col-xl-2">
-                {{ form_widget(EtatDesLieuxForm.sourate_debut_verset_fin) }}
-            </div>
         </div>
         <div class="row my-3">
             <div class="col-6 col-xl-2 py-2 col-sm-6">
                 {{ form_label(EtatDesLieuxForm.sourate_fin) }}
             </div>
-            <div class="col-6 col-xl-2 col-sm-6">
+            <div class="col-6 col-xl-3 col-sm-6">
                 {{ form_widget(EtatDesLieuxForm.sourate_fin) }}
-            </div>
-            <div class="col-6 col-xl-2 py-2 col-sm-3">
-                {{ form_label(EtatDesLieuxForm.sourate_fin_verset_debut) }}
-            </div>
-            <div class="col-6 col-xl-2 col-sm-3">
-                {{ form_widget(EtatDesLieuxForm.sourate_fin_verset_debut) }}
             </div>
             <div class="col-6 col-xl-2 py-2 col-sm-3">
                 {{ form_label(EtatDesLieuxForm.sourate_fin_verset_fin) }}

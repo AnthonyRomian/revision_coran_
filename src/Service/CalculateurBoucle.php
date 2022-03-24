@@ -71,7 +71,6 @@ class CalculateurBoucle extends AbstractController
         if ($tableauSourateSupp[0] !== "") {
             // pour chaque sourate supp determine page debut & fin + nbre de page
             $nombre_pageSourateSupp = 0;
-            dump($tableauSourateSupp);
             $tableauSourateAvant = [];
             $tableauSourateApres = [];
 
@@ -96,9 +95,12 @@ class CalculateurBoucle extends AbstractController
                     $verset = $this->entityManager->getRepository(Verset::class)->findBy(array("sourate" => $tableauSourateAvant[$x]));
                     $souratesAvantDebutPage = $verset[array_key_first($verset)]->getPage();
                     $sourateAvantFinPage = $verset[array_key_last($verset)]->getPage();
-                    $quartHizbdebut = $verset[array_key_first($verset)]->getHizb();
-                    $quartHizbfin = $verset[array_key_last($verset)]->getHizb();
-                    $hizbSourateAvant += ($quartHizbfin - $quartHizbdebut) / 4;
+                    $hizbDebut = $verset[array_key_first($verset)]->getHizb();
+                    $hizbFin = $verset[array_key_last($verset)]->getHizb();
+                    $quartHizbDebut = $verset[array_key_first($verset)]->getQuartHizb();
+                    $quartHizbFin = $verset[array_key_last($verset)]->getQuartHizb();
+                    $hizbSourateAvant += ($hizbFin - $hizbDebut) + (($quartHizbFin - $quartHizbDebut)/4) ;
+
                     $range = ["num_sourate" => $tableauSourateAvant[$x],
                         "premiere_page" => $souratesAvantDebutPage,
                         "derniere_page" => $sourateAvantFinPage];
@@ -110,9 +112,11 @@ class CalculateurBoucle extends AbstractController
                     $verset = $this->entityManager->getRepository(Verset::class)->findBy(array("sourate" => $tableauSourateApres[$x]));
                     $sourateApresDebutPage = $verset[array_key_first($verset)]->getPage();
                     $sourateApresFinPage = $verset[array_key_last($verset)]->getPage();
-                    $quartHizbdebut = $verset[array_key_first($verset)]->getHizb();
-                    $quartHizbfin = $verset[array_key_last($verset)]->getHizb();
-                    $hizbSourateApres += ($quartHizbfin - $quartHizbdebut) / 4;
+                    $hizbDebut = $verset[array_key_first($verset)]->getHizb();
+                    $hizbFin = $verset[array_key_last($verset)]->getHizb();
+                    $quartHizbDebut = $verset[array_key_first($verset)]->getQuartHizb();
+                    $quartHizbFin = $verset[array_key_last($verset)]->getQuartHizb();
+                    $hizbSourateApres += ($hizbFin - $hizbDebut) + (($quartHizbFin - $quartHizbDebut)/4) ;
                     $range = ["num_sourate" => $tableauSourateApres[$x],
                         "premiere_page" => $sourateApresDebutPage,
                         "derniere_page" => $sourateApresFinPage];
@@ -123,13 +127,15 @@ class CalculateurBoucle extends AbstractController
             $nombre_pageSourateSupp = 0;
         }
         //-------------- Sourate supp -----------------------//
+
         //calcul du nombre de pages
         $verset_debut = $this->entityManager->getRepository(Verset::class)->findBy(array("sourate" => $sourate_debut_search->getId()));
         $verset_fin = $this->entityManager->getRepository(Verset::class)->findBy(array("sourate" => $sourate_fin_search->getId()));
-        $page_debutBouclePrincipale = $verset_debut[array_key_first($verset_debut)]->getPage();
-        $page_finBouclePrincipale = $verset_fin[array_key_last($verset_fin)]->getPage();
+        $page_debutBouclePrincipale = $verset_debut[$sourate_debut_verset_debut]->getPage();
+        $page_finBouclePrincipale = $verset_fin[$sourate_fin_verset_fin-1]->getPage();
         $total_page = ($page_finBouclePrincipale + 1) - $page_debutBouclePrincipale;
         $total_page += $nombre_pageSourateSupp;
+
         $boucle_de_revision->setNombrePages($total_page);
         // calculer le nombre de hizb total
         $handicap_quart_hizb = 0;
@@ -148,13 +154,13 @@ class CalculateurBoucle extends AbstractController
             $handicap_quart_hizb += 0.75;
         }
         $hizb_total = (($borne_sup + 1) - $borne_inf);
+        $quantite_hizb = $hizb_total - $handicap_quart_hizb;
+        $quantite_hizb += $hizbSourateAvant + $hizbSourateApres;
 
-        $quantité_hizb = $hizb_total - $handicap_quart_hizb;
-        $quantité_hizb += $hizbSourateAvant + $hizbSourateApres;
-        $boucle_de_revision->setNbreHizb($quantité_hizb);
+        $boucle_de_revision->setNbreHizb($quantite_hizb);
 
         //tableau de la boucle
-        if ($quantité_hizb > 0 && $quantité_hizb <= 14) {
+        if ($quantite_hizb > 0 && $quantite_hizb <= 14) {
             $boucle_de_revision->setDuree($boucle_de_revision_1);
             $compteur = false;
 
@@ -276,7 +282,7 @@ class CalculateurBoucle extends AbstractController
                     $this->entityManager->flush();
                 }
             }
-        } else if ($quantité_hizb >= 15 && $quantité_hizb <= 28) {
+        } else if ($quantite_hizb >= 15 && $quantite_hizb <= 28) {
             $boucle_de_revision->setDuree($boucle_de_revision_2);
             $compteur = false;
             //nombre entier par jour
@@ -400,7 +406,7 @@ class CalculateurBoucle extends AbstractController
                     $this->entityManager->flush();
                 }
             }
-        } else if ($quantité_hizb >= 29 && $quantité_hizb <= 42) {
+        } else if ($quantite_hizb >= 29 && $quantite_hizb <= 42) {
             $boucle_de_revision->setDuree($boucle_de_revision_3);
             $compteur = false;
             //nombre entier par jour
@@ -524,7 +530,7 @@ class CalculateurBoucle extends AbstractController
                     $this->entityManager->flush();
                 }
             }
-        } else if ($quantité_hizb >= 43 && $quantité_hizb <= 56) {
+        } else if ($quantite_hizb >= 43 && $quantite_hizb <= 56) {
             $boucle_de_revision->setDuree($boucle_de_revision_4);
             $compteur = false;
             // definir le nombre de page
@@ -648,7 +654,7 @@ class CalculateurBoucle extends AbstractController
                     $this->entityManager->flush();
                 }
             }
-        } else if ($quantité_hizb >= 56 && $quantité_hizb <= 60) {
+        } else if ($quantite_hizb >= 56 && $quantite_hizb <= 60) {
             $boucle_de_revision->setDuree($boucle_de_revision_5);
 
             //si jours de memo revient 5 fois

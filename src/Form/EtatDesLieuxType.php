@@ -29,40 +29,27 @@ class EtatDesLieuxType extends AbstractType
                 'mapped' => true,
                 'class' => Sourate::class,
                 'choice_label' => 'latin',
-                'placeholder' => 'Ex : 1 - Al Fatiha',
+                'placeholder' => 'Ex 1 - Al Fatiha',
                 'label' => 'Sourate début',
                 'required' => false
             ])
             ->add('sourate_debut_verset_debut', ChoiceType::class, [
-                'placeholder' => 'Ex : 1',
+                'placeholder' => 'Ex 1',
                 'required' => false,
                 'mapped' => true,
                 'label' => 'Verset début'
-            ])
-            ->add('sourate_debut_verset_fin', ChoiceType::class, [
-                'placeholder' => 'Ex : 7',
-                'required' => false,
-                'label' => 'Verset fin'
-
             ])
             ->add('sourate_fin', EntityType::class, [
                 'mapped' => true,
                 'class' => Sourate::class,
                 'choice_label' => 'latin',
-                'placeholder' => 'Ex : 2 - Al Baqara',
+                'placeholder' => 'Ex 2 - Al Baqara',
                 'label' => 'Sourate fin',
                 'required' => false
 
             ])
-            ->add('sourate_fin_verset_debut', ChoiceType::class, [
-                'placeholder' => 'Ex : 1',
-                'required' => false,
-                'label' => 'Verset début'
-
-
-            ])
             ->add('sourate_fin_verset_fin', ChoiceType::class, [
-                'placeholder' => 'Ex : 102',
+                'placeholder' => 'Ex 102',
                 'required' => false,
                 'label' => 'Verset fin'
 
@@ -141,8 +128,6 @@ class EtatDesLieuxType extends AbstractType
 
         $formModifier = function (FormInterface $form, Sourate $sourate_debut = null) {
             $versets_debut = null === $sourate_debut ? [] : $sourate_debut->getVerset();
-            $versets_fin = null === $sourate_debut ? [] : $sourate_debut->getVerset();
-
             $form
                 ->add('sourate_debut_verset_debut', EntityType::class, [
                     'class' => Verset::class,
@@ -152,30 +137,12 @@ class EtatDesLieuxType extends AbstractType
                     'mapped' => true,
                     'label' => 'Verset début : ',
                     'required' => true
-                ])
-                ->add('sourate_debut_verset_fin', EntityType::class, [
-                    'class' => Verset::class,
-                    'choices' => $versets_fin,
-                    'choice_label' => 'numero',
-                    'placeholder' => 'Choisir verset',
-                    'mapped' => true,
-                    'label' => 'Verset fin : ',
-                    'required' => true
                 ]);
         };
 
         $formModifier_2 = function (FormInterface $form, Sourate $sourate_fin = null) {
-            $versets_debut_2 = null === $sourate_fin ? [] : $sourate_fin->getVerset();
             $versets_fin_2 = null === $sourate_fin ? [] : $sourate_fin->getVerset();
             $form
-                ->add('sourate_fin_verset_debut', EntityType::class, [
-                    'class' => Verset::class,
-                    'choices' => $versets_debut_2,
-                    'choice_label' => 'numero',
-                    'placeholder' => 'Choisir verset',
-                    'mapped' => true,
-                    'label' => 'Verset début : '
-                ])
                 ->add('sourate_fin_verset_fin', EntityType::class, [
                     'class' => Verset::class,
                     'choices' => $versets_fin_2,

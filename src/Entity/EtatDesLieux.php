@@ -29,7 +29,6 @@ class EtatDesLieux
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotNull
-     * @Assert\NotEqualTo(propertyPath="sourate_debut")
      */
     private $sourate_fin;
 
@@ -46,26 +45,11 @@ class EtatDesLieux
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\LessThan(propertyPath="sourate_debut_verset_fin")
      */
     private $sourate_debut_verset_debut;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\GreaterThan(propertyPath="sourate_debut_verset_debut")
-     *
-     */
-    private $sourate_debut_verset_fin;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\LessThan(propertyPath="sourate_fin_verset_fin")
-     */
-    private $sourate_fin_verset_debut;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\GreaterThan(propertyPath="sourate_fin_verset_debut")
      */
     private $sourate_fin_verset_fin;
 
@@ -198,30 +182,6 @@ class EtatDesLieux
     {
         return $this->sourate_debut_verset_debut;
     }*/
-
-    public function getSourateDebutVersetFin(): ?string
-    {
-        return $this->sourate_debut_verset_fin;
-    }
-
-    public function setSourateDebutVersetFin(string $sourate_debut_verset_fin): self
-    {
-        $this->sourate_debut_verset_fin = $sourate_debut_verset_fin;
-
-        return $this;
-    }
-
-    public function getSourateFinVersetDebut(): ?string
-    {
-        return $this->sourate_fin_verset_debut;
-    }
-
-    public function setSourateFinVersetDebut(string $sourate_fin_verset_debut): self
-    {
-        $this->sourate_fin_verset_debut = $sourate_fin_verset_debut;
-
-        return $this;
-    }
 
     public function getSourateFinVersetFin(): ?string
     {
